@@ -7,6 +7,13 @@ Single-cell RNA sequencing provides resourceful information to study the cells s
 
 ![CeLEry workflow](docs/asserts/images/workflow.png)
 
+*The implmentation procedure of CeLEry*:
+- CeLEry takes spatial transcriptomic data as input for the training data and the scRNA-seq as testing data set. 
+- CeLEry optionally generates replicates of the spatial transcriptomic data via variational autoencoder then includes them as the training data together with original spatial transcriptomic data. 
+- A deep neural network is trained to learn the relationship between the spotwise gene expression and location information, minimizing the loss functions that are specified according to the specific problem. 
+
+
+
 ## Usage
 
 The [**CeLEry**](https://github.com/QihuangZhang/CeLEry) package is an implementation of a deep neural network in discovering location information for single cell RNA data. With CeLEry, you can:

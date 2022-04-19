@@ -7,6 +7,23 @@ Single-cell RNA sequencing provides resourceful information to study the cells s
 
 ![CeLEry workflow](docs/asserts/images/workflow.png)
 
+## Usage
+
+The [**CeLEry**](https://github.com/QihuangZhang/CeLEry) package is an implementation of a deep neural network in discovering location information for single cell RNA data. With CeLEry, you can:
+
+- Preprocess spatial transcriptomics data from various formats.
+- Build a deep neural network to predict cell locations.
+- Generate synthetic spatial transcriptomic data.
+
+
+
+## Tutorial
+
+
+A Jupyter Notebook of the tutorial (*UNDER CONSTRUCTION*) is accessible from : 
+<br>
+https://github.com/QihuangZhang/CeLEry/blob/main/tutorial/tutorial.ipynb
+<br>
 
 
 ## System Requirements

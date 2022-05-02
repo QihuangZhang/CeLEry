@@ -341,3 +341,93 @@ class DNNregion(DNN):
 		loss = torch.mean(val)
 
 		return {'loss': loss, 'MSE_pure': MSE_sum, 'Inside_indic':Si, 'Area':area.detach().numpy()}
+
+
+
+class DNNdomain(DNN):
+	def __init__(self,  
+		# in_channels: int,
+		in_channels: int,
+		num_classes: int,
+		hidden_dims: List = None,	
+		importance_weights: List=None,
+		**kwargs) -> None:
+		super(DNNdomain, self).__init__(in_channels, hidden_dims, **kwargs)
+		
+		if hidden_dims is None:
+			hidden_dims = [200, 100, 50]
+
+		self.fclayer1 = nn.Sequential( 
+			nn.Linear(in_channels, hidden_dims[0]),
+			nn.Dropout(0.25),
+			nn.ReLU())
+		self.fclayer2 = nn.Sequential( 
+			nn.Linear(hidden_dims[0], hidden_dims[1]),
+			nn.ReLU())
+		self.fclayer3 = nn.Sequential( 
+			nn.Linear(hidden_dims[1], hidden_dims[2]),
+			nn.ReLU())
+		self.fclayer4 = nn.Sequential(
+			nn.Linear(hidden_dims[2], num_classes))
+		self.importance_weights = importance_weights
+	
+	def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
+		"""
+        Computes forward pass.
+        Parameters
+        -----------
+        x : torch.tensor, shape=(num_examples, num_features)
+            Input features.
+        Returns
+        -----------
+        logits : torch.tensor, shape=(num_examples, num_classes-1)
+        """
+		z = self.fclayer1(input[0])
+		z = self.fclayer2(z)
+		z = self.fclayer3(z)
+		logits = self.fclayer4(z)
+		return  [logits, input]
+
+	def loss_function(self,
+					*args,
+					**kwargs) -> dict:
+		"""Computes the CORAL loss described in
+		Cao, Mirjalili, and Raschka (2020)
+		*Rank Consistent Ordinal Regression for Neural Networks
+		   with Application to Age Estimation*
+		Pattern Recognition Letters, https://doi.org/10.1016/j.patrec.2020.11.008
+		Parameters
+		----------
+		logits : torch.tensor, shape(num_examples, num_classes-1)
+			Outputs of the CORAL layer.
+		levels : torch.tensor, shape(num_examples, num_classes-1)
+			True labels represented as extended binary vectors
+			(via `coral_pytorch.dataset.levels_from_labelbatch`).
+		importance_weights : torch.tensor, shape=(num_classes-1,) (default=None)
+			Optional weights for the different labels in levels.
+			A tensor of ones, i.e.,
+			`torch.ones(num_classes, dtype=torch.float32)`
+			will result in uniform weights that have the same effect as None.
+		reduction : str or None (default='mean')
+			If 'mean' or 'sum', returns the averaged or summed loss value across
+			all data points (rows) in logits. If None, returns a vector of
+			shape (num_examples,)
+		"""
+		logits = args[0]
+		levels = args[1][1]
+		
+		if not logits.shape == levels.shape:
+			raise ValueError("Please ensure that logits (%s) has the same shape as levels (%s). "
+							% (logits.shape, levels.shape))
+				
+		if self.importance_weights is not None:
+			loss = nn.CrossEntropyLoss(weight = self.importance_weights)
+		else:
+			loss = nn.CrossEntropyLoss()
+
+		layerid = torch.sum(levels, dim = 1)
+		
+		output = loss(logits, layerid)
+
+		return {'loss': output}
+

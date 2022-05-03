@@ -109,3 +109,31 @@ class wrap_gene_layer(TensorDataset):
 		return geneseq, layerv
 	def __len__(self):
 		return self.imagedimension[0] * self.imagedimension[2]
+
+
+class wrap_gene_domain(TensorDataset):
+	"""Dataset wrapping labeled (cluster label) data tensors with cluster information.
+	Used in data prediction models
+	Each sample will be retrieved by indexing tensors along the first
+	dimension.
+
+	Arguments:
+		datainput (numpy array): contains sample data.
+		layer (boolean): T if layer information is contained
+		layerkey: the keyword for layer. Default is "Layer"
+	"""
+	def __init__(self, datainput, label, layerkey = "layer"):
+		self.data_tensor = torch.from_numpy(datainput).float()
+		getlayer = label[layerkey].to_numpy()
+		self.layer = getlayer.astype('float32')
+		self.layersunq = np.sort(np.unique(self.layer))
+		self.nlayers = len(self.layersunq)
+		self.imagedimension = self.data_tensor.shape
+	def __getitem__(self, index):
+		indexsample = index // self.imagedimension[2]
+		indexspot = index % self.imagedimension[2]
+		geneseq = self.data_tensor[indexsample,:,indexspot]
+		layeri = self.layer[indexspot].astype('int64')
+		return geneseq, layeri
+	def __len__(self):
+		return self.imagedimension[0] * self.imagedimension[2]

@@ -416,18 +416,18 @@ class DNNdomain(DNN):
 		logits = args[0]
 		levels = args[1][1]
 		
-		if not logits.shape == levels.shape:
-			raise ValueError("Please ensure that logits (%s) has the same shape as levels (%s). "
-							% (logits.shape, levels.shape))
+		# if not logits.shape == levels.shape:
+		# 	raise ValueError("Please ensure that logits (%s) has the same shape as levels (%s). "
+		# 					% (logits.shape, levels.shape))
 				
 		if self.importance_weights is not None:
 			loss = nn.CrossEntropyLoss(weight = self.importance_weights)
 		else:
 			loss = nn.CrossEntropyLoss()
 
-		layerid = torch.sum(levels, dim = 1)
+		# layerid = torch.sum(levels, dim = 1)
 		
-		output = loss(logits, layerid)
+		output = loss(logits, levels)
 
 		return {'loss': output}
 

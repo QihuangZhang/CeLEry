@@ -73,14 +73,15 @@ def centralize2 (data):
 	return datanew 
 
 
-def getGeneImg (adata, emptypixel, geneset = None):
+def getGeneImg (datainput, emptypixel, geneset = None):
 	# Transform the AnnData file into Genes of images
-	# adata: the input data of AnnData object
+	# datainput: the input data of AnnData object
 	# geneset: the set of gene considered
 	# emptypixel: a float that indicate the value on the missing pixel
+	adata = (datainput.X.A if issparse(datainput.X) else datainput.X)
 	if geneset is None:
-		x = adata.obs.iloc[:,0]
-		y = adata.obs.iloc[:,1]
+		x = datainput.obs["x_cord"]
+		y = datainput.obs["y_cord"]
 		xmin = x.min()
 		xmax = x.max()
 		ymin = y.min()
@@ -97,12 +98,8 @@ def getGeneImg (adata, emptypixel, geneset = None):
 		shape = (xlim,ylim)
 		all_arr = []
 		firstIteration = True
-		#if (type(adata.X) == np.ndarray):
-		#	exprs = adata.X
-		#else:
-		#	exprs = adata.X.toarray()
-		for i in tqdm(range(adata.X.shape[1])):
-			z = adata.X[:,i] 
+		for i in tqdm(range(adata.shape[1])):
+			z = adata[:,i] 
 			zmin = z.min()
 			zmax = z.max()
 			# create array for image : zmax+1 is the default value
@@ -111,7 +108,7 @@ def getGeneImg (adata, emptypixel, geneset = None):
 				if (z[inp]!=emptypixel):
 					img[x.iloc[inp]-xmin,y.iloc[inp]-ymin]=z[inp]
 			all_arr.append(img)
-		adata.GeneImg = np.stack(all_arr)			
+		datainput.GeneImg = np.stack(all_arr)			
 
 def getGeneImgSparse (adata, emptypixel):
 	# Transform the AnnData file into Genes of images for sparse matrix format

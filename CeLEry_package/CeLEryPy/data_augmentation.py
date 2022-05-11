@@ -48,3 +48,48 @@ def FitGenModel_continue (path, filename, model, clg, traindata, cdataexpand, be
     model.filename = filename
     return model, clg
 
+def GeneratePlot(path, filename, beta, traindata):
+    trainloader= torch.utils.data.DataLoader(traindata, batch_size=1, num_workers = 4)
+    filename = "{path}/DataAugmentation/{filename}_CVAE_{beta}.obj".format(path = path, filename = filename, beta = beta)
+    # 
+    filehandler = open(filename, 'rb') 
+    CVAEmodel = pickle.load(filehandler)
+    #
+    clg=cel.TrainerExe()
+    clg.model = CVAEmodel
+    try:
+        os.makedirs("{path}/DataAugmentation/{filename}_Generation/Glimps/Gen{beta}".format(path = path, filename = filename, beta = beta))
+    except FileExistsError:
+        print("Folder already exists")
+    for j, img in enumerate(trainloader):
+        # img = next(dataloader_iterator)
+        cel.plotGeneImg(img[0][0,0,:,:], filename = "../output/LIBD/Generation/Glimps/Gen{beta}/img{j}".format(beta = beta, j = j))
+        omin = img[0].min()
+        omax = img[0].max()
+        for i in range(10):
+            result = CVAEmodel(img) 
+            outputimg = result[0][0,0,:,:].detach().numpy() * result[4][0,0,:,:].detach().numpy()
+            cel.plotGeneImg( outputimg , filename = "../output/LIBD/Generation/Glimps/Gen{beta}/img{j}var{i}".format(beta = beta, j = j, i = i), range = (omin.item(), omax.item()))
+
+
+def Data_Generation(path, filename, beta, dataSection1, traindata, nrep):
+    trainloader= torch.utils.data.DataLoader(traindata, batch_size=1, num_workers = 4)
+    random.seed(2021)
+    torch.manual_seed(2021)
+    np.random.seed(2021)
+    #
+    fileto = "{path}/DataAugmentation/{filename}_CVAE_{beta}.obj".format(path = path, filename = filename, beta = beta)
+    filehandler = open(fileto, 'rb') 
+    CVAEmodel = pickle.load(filehandler)
+    #
+    clg= cel.TrainerExe()
+    clg.model = CVAEmodel
+    data_gen=clg.fast_generation(trainloader, nrep)
+    # data_gen=np.load("../output/{folder}/data_gen.npy".format(folder = folder))
+    data_gen_rs = clg.deep_reshape (data = data_gen, refer = dataSection1.obs[["x_cord","y_cord"]])
+    try:
+        os.makedirs("{path}/DataAugmentation/DataGen".format(path = path))
+    except FileExistsError:
+        print("Folder already exists")
+    np.save("{path}/DataAugmentation/DataGen/{filename}_data_gen_{beta}_n{nrep}.npy".format(path = path, filename = filename, beta = beta, nrep = nrep), data_gen_rs)
+

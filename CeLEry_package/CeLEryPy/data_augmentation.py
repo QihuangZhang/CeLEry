@@ -13,6 +13,38 @@ def seed_worker(worker_id):
     np.random.seed(worker_seed)
     random.seed(worker_seed)
 
+def DataAugmentation (RefDataOrigin, path = "../output/Biogene", filename = "SpatialTranscript", clusterready = False, n_clusters=100,  beta = 1e-5, nrep = 2, generateplot = True):
+    #Prepare
+    RefDataOriginsort = RefDataOrigin.obs.sort_values (by = ['x_cord','y_cord'])
+    RefDataOrigin = RefDataOrigin[RefDataOriginsort.index]
+    cdata = RefDataOrigin.copy()
+    getGeneImg(cdata, emptypixel = 0)
+    cdataexpand =  np.expand_dims(cdata.GeneImg, axis=1) 
+    #Clustering
+    try:
+        os.makedirs("{path}/DataAugmentation".format(path = path))
+    except FileExistsError:
+        print("Folder already exists")
+    if clusterready:
+        kmeansresults = np.load("{path}/DataAugmentation/{filename}_cluster.npy".format(path = path, filename = filename))
+    else:
+        kmeansmodel =  KMeans(n_clusters, random_state=0)
+        cdatacentral = cel.centralize(cdataexpand.copy())
+        direclust = [cdatacentral[x,0,:,:] for x in range(cdatacentral.shape[0])]
+        direflat = [x.flat for x in direclust]
+        direflatnp = np.stack(direflat)
+        kmeans = kmeansmodel.fit(direflatnp)
+        kmeansresults = kmeans.labels_
+        np.save("{path}/DataAugmentation/{filename}_cluster.npy".format(path = path, filename = filename), kmeansresults)
+    # 
+    full_RefData = cel.datagenemapclust(cdataexpand, kmeansresults)
+    CVAEmodel, clg = FitGenModel(path = path, filename = filename, traindata = full_RefData, cdataexpand = cdataexpand, Kmeans_cluster = kmeansresults, beta = beta)
+    CVAEmodel, clg = FitGenModel_continue(path = path, filename = filename, model = CVAEmodel, clg = clg, traindata = full_RefData, cdataexpand = cdataexpand, beta = beta)
+    if generateplot:
+        print("Now generating the plots for the augmented data...")
+        GeneratePlot(path, filename, beta = beta, traindata = full_RefData)
+    Data_Generation(path, filename, beta= beta, dataSection1 = RefDataOrigin, traindata = full_RefData, nrep = nrep)
+
 
 def FitGenModel (path, filename, traindata, cdataexpand, Kmeans_cluster, beta, learning_rate = 1e-3):
     random.seed(2021)
@@ -92,4 +124,63 @@ def Data_Generation(path, filename, beta, dataSection1, traindata, nrep):
     except FileExistsError:
         print("Folder already exists")
     np.save("{path}/DataAugmentation/DataGen/{filename}_data_gen_{beta}_n{nrep}.npy".format(path = path, filename = filename, beta = beta, nrep = nrep), data_gen_rs)
+
+
+def Fit_domain (data_train, domain_weights, domain_data = None, domainkey = "layer", hidden_dims = [10, 5, 2], num_epochs_max = 500, path = "", filename = "PreOrg_domainsc", batch_size = 4, num_workers = 4, number_error_try = 15, initial_learning_rate = 0.0001, seednum = 2021):
+    #
+    random.seed(seednum)
+    torch.manual_seed(seednum)
+    np.random.seed(seednum)
+    g = torch.Generator()
+    g.manual_seed(seednum)
+    #
+    if domain_data is None:
+        domain_data = data_train.obs
+    #
+    tdatax = np.expand_dims(data_train.X, axis = 0)
+    tdata_rs = np.swapaxes(tdatax, 1, 2)
+    DataTra = wrap_gene_domain(tdata_rs, data_train.obs, domainkey)
+    t_loader= torch.utils.data.DataLoader(DataTra, batch_size = batch_size, num_workers = num_workers, shuffle = True, worker_init_fn=seed_worker, generator=g)
+    # Create Deep Neural Network for Coordinate Regression
+    DNNmodel = DNNdomain( in_channels = DataTra[1][0].shape[0], num_classes = domain_weights.shape[0], hidden_dims = hidden_dims, importance_weights = domain_weights) # [100,50,25] )
+    DNNmodel = DNNmodel.float()
+    #
+    CoOrg= TrainerExe()
+    CoOrg.train(model = DNNmodel, train_loader = t_loader, num_epochs= num_epochs_max, RCcountMax = number_error_try, learning_rate = initial_learning_rate)
+    #
+    filename3 = "{path}/{filename}.obj".format(path = path, filename = filename)
+    filehandler2 = open(filename3, 'wb') 
+    pickle.dump(DNNmodel, filehandler2)
+
+
+def AugFit_domain (RefDataOrigin, domain_weights, domain_data = None, domainkey = "layer", hidden_dims =  [50, 10, 5], num_epochs_max = 500, beta = 1e-5, nrep = 2,  path = "../output/Biogene", filename = "SpatialTranscript", batch_size = 4, num_workers = 4, number_error_try = 15, initial_learning_rate = 0.0001, seednum = 2021):
+    random.seed(seednum)
+    torch.manual_seed(seednum)
+    np.random.seed(seednum)
+    if domain_data is None:
+        domain_data = RefDataOrigin.obs
+    #
+    # Original Version
+    data_gen_rs = np.load("{path}/DataAugmentation/DataGen/{filename}_data_gen_{beta}_n{nrep}.npy".format(path = path, filename = filename, beta = beta, nrep = nrep))
+    # Attach the original
+    tdatax = np.expand_dims(RefDataOrigin.X, axis = 0)
+    tdata_rs = np.swapaxes(tdatax, 1, 2)
+    datacomp = np.concatenate((data_gen_rs, tdata_rs), axis=0)
+    #
+    dataDNN = cel.wrap_gene_domain(datacomp, domain_data, domainkey)
+    CoReg_loader = torch.utils.data.DataLoader(dataDNN, batch_size=batch_size, num_workers = num_workers, shuffle = True, worker_init_fn=seed_worker)
+    # Create Deep Neural Network for Coordinate Regression
+    DNNmodel = cel.DNNdomain( in_channels = data_gen_rs.shape[1], num_classes = domain_weights.shape[0], hidden_dims = hidden_dims, importance_weights = domain_weights)
+    DNNmodel = DNNmodel.float()
+    #
+    CoReg = cel.TrainerExe()
+    CoReg.train(model = DNNmodel, train_loader = CoReg_loader, num_epochs= num_epochs_max, RCcountMax = number_error_try, learning_rate = initial_learning_rate)
+    #
+    try:
+        os.makedirs("{path}/DataAugmentation/PredictionModel".format(path = path))
+    except FileExistsError:
+        print("Note: Folder {path}/DataAugmentation/PredictionModel already exists".format(path = path))
+    filename2 = "{path}/DataAugmentation/PredictionModel/{filename}_domain_{beta}_n{nrep}.obj".format(filename = filename, path = path, beta = beta, nrep = nrep)
+    filehandler2 = open(filename2, 'wb') 
+    pickle.dump(DNNmodel, filehandler2)
 

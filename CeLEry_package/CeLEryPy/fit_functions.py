@@ -63,7 +63,7 @@ def Fit_layer (data_train, layer_weights, layer_data = None, layerkey = "layer",
     #
     tdatax = np.expand_dims(data_train.X, axis = 0)
     tdata_rs = np.swapaxes(tdatax, 1, 2)
-    DataTra = wrap_gene_layer(tdata_rs, data_train.obs, layerkey)
+    DataTra = wrap_gene_layer(tdata_rs, layer_data, layerkey)
     t_loader= torch.utils.data.DataLoader(DataTra, batch_size = batch_size, num_workers = num_workers, shuffle = True, worker_init_fn=seed_worker, generator=g)
     # Create Deep Neural Network for Coordinate Regression
     DNNmodel = DNNordinal( in_channels = DataTra[1][0].shape[0], num_classes = layer_weights.shape[0], hidden_dims = hidden_dims, importance_weights = layer_weights) # [100,50,25] )
@@ -89,7 +89,7 @@ def Fit_domain (data_train, domain_weights, domain_data = None, domainkey = "lay
     #
     tdatax = np.expand_dims(data_train.X, axis = 0)
     tdata_rs = np.swapaxes(tdatax, 1, 2)
-    DataTra = wrap_gene_domain(tdata_rs, data_train.obs, domainkey)
+    DataTra = wrap_gene_domain(tdata_rs, domain_data, domainkey)
     t_loader= torch.utils.data.DataLoader(DataTra, batch_size = batch_size, num_workers = num_workers, shuffle = True, worker_init_fn=seed_worker, generator=g)
     # Create Deep Neural Network for Coordinate Regression
     DNNmodel = DNNdomain( in_channels = DataTra[1][0].shape[0], num_classes = domain_weights.shape[0], hidden_dims = hidden_dims, importance_weights = domain_weights) # [100,50,25] )

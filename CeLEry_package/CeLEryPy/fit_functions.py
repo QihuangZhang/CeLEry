@@ -145,7 +145,7 @@ def Predict_domain (data_test, class_num,  path = "", filename = "PreOrg_domains
     ## Wrap up Validation data in to dataloader
     vdatax = np.expand_dims(data_test.X, axis = 0)
     vdata_rs = np.swapaxes(vdatax, 1, 2)
-    DataVal = wrap_gene_domain(vdata_rs, location_data, "psudo_label")
+    DataVal = wrap_gene_domain(vdata_rs, location_data, truth_label)
     Val_loader= torch.utils.data.DataLoader(DataVal, batch_size=1, num_workers = 4)
     #
     domain = report_prop_method_domain(folder = path,
@@ -156,7 +156,7 @@ def Predict_domain (data_test, class_num,  path = "", filename = "PreOrg_domains
     return domain
 
 
-def report_prop_method_domain (folder, name, data_test, Val_loader, class_num, outname = ""):
+def report_prop_method_domain (folder, name, data_test, Val_loader, class_num):
     """
         Report the results of the proposed methods in comparison to the other method
         :folder: string: specified the folder that keep the proposed DNN method
@@ -164,10 +164,7 @@ def report_prop_method_domain (folder, name, data_test, Val_loader, class_num, o
         :data_test: AnnData: the data of query data
         :Val_loader: Dataload: the validation data from dataloader
         :class_num: int: the number of classes
-        :outname: string: specified the name of the output, default is the same as the name
     """
-    if outname == "":
-        outname = name
     filename2 = "{folder}/{name}.obj".format(folder = folder, name = name)
     filehandler = open(filename2, 'rb') 
     DNNmodel = pickle.load(filehandler)
@@ -178,6 +175,7 @@ def report_prop_method_domain (folder, name, data_test, Val_loader, class_num, o
         recon = DNNmodel(img)
         logitsvalue = np.squeeze(torch.exp(recon[0]).detach().numpy(), axis = 0)
         prbfull = logitsvalue / sum(logitsvalue)
+        prbfull = np.nan_to_num(prbfull, nan=1.0)
         coords_predict[i] = np.where(prbfull == prbfull.max())[0].max()
         payer_prob[i,1:] = prbfull
     #

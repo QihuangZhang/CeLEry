@@ -332,3 +332,42 @@ def plot_confusion_matrix (referadata, filename, nlayer = 7):
 	# conf_mat_fig = seaheatmap(conf_mat_perc, annot=True, cmap='Blues')
 	# confplot = conf_mat_fig.get_figure()    
 	# confplot.savefig("{filename}.png".format(filename = filename), dpi=400)
+
+def make_annData_spatial (adata, spatial):
+    """ 
+    adata: an annData file for the transcriptomics data
+    spatial: an pandas dataframe recording the location information for each spot
+    """
+    adata.obs["select"] = spatial[1]
+    adata.obs["x_cord"] = spatial[2]
+    adata.obs["y_cord"] = spatial[3]
+    adata.obs["x_pixel"] = spatial[4]
+    adata.obs["y_pixel"] = spatial[5]
+    # Select captured samples
+    adata = adata[adata.obs["select"] == 1]
+    adata.var_names = [i.upper() for i in list(adata.var_names)]
+    adata.var["genename"] = adata.var.index.astype("str")
+    #
+    adata.var_names_make_unique()
+    prefilter_genes(adata, min_cells=3) # avoiding all genes are zeros
+    prefilter_specialgenes(adata)
+    #Normalize and take log for UMI
+    sc.pp.normalize_per_cell(adata)
+    sc.pp.log1p(adata)
+    return adata
+
+def make_annData_query (adata):
+    """ 
+    adata: an annData file for the scRNA data
+    """
+    adata.var_names = [i.upper() for i in list(adata.var_names)]
+    adata.var["genename"] = adata.var.index.astype("str")
+    #
+    adata.var_names_make_unique()
+    prefilter_genes(adata, min_cells=3) # avoiding all genes are zeros
+    prefilter_specialgenes(adata)
+    #Normalize and take log for UMI
+    sc.pp.normalize_per_cell(adata)
+    sc.pp.log1p(adata)
+    return adata
+

@@ -333,7 +333,7 @@ def plot_confusion_matrix (referadata, filename, nlayer = 7):
 	# confplot = conf_mat_fig.get_figure()    
 	# confplot.savefig("{filename}.png".format(filename = filename), dpi=400)
 
-def make_annData_spatial (adata, spatial):
+def make_annData_spatial (adata, spatial, min_cells = 3):
     """ 
     adata: an annData file for the transcriptomics data
     spatial: an pandas dataframe recording the location information for each spot
@@ -349,7 +349,7 @@ def make_annData_spatial (adata, spatial):
     adata.var["genename"] = adata.var.index.astype("str")
     #
     adata.var_names_make_unique()
-    prefilter_genes(adata, min_cells=3) # avoiding all genes are zeros
+    prefilter_genes(adata, min_cells=min_cells) # avoiding all genes are zeros
     prefilter_specialgenes(adata)
     #Normalize and take log for UMI
     sc.pp.normalize_per_cell(adata)

@@ -13,6 +13,7 @@ from . DNN import DNNdomain
 from . TrainerExe import TrainerExe
 import pickle
 
+from scipy.sparse import issparse
 
 def seed_worker(worker_id):
     worker_seed = torch.initial_seed() % 2**32
@@ -30,7 +31,8 @@ def Fit_cord (data_train, location_data = None, hidden_dims = [30, 25, 15], num_
     if location_data is None:
         location_data = data_train.obs
     #
-    tdatax = np.expand_dims(data_train.X, axis = 0)
+    traindata = (data_train.X.A if issparse(data_train.X) else data_train.X)
+    tdatax = np.expand_dims(traindata, axis = 0)
     tdata_rs = np.swapaxes(tdatax, 1, 2)
     DataTra = wrap_gene_location(tdata_rs, location_data)
     t_loader= torch.utils.data.DataLoader(DataTra, batch_size=batch_size, num_workers = num_workers, shuffle = True, worker_init_fn=seed_worker, generator=g)
@@ -61,7 +63,8 @@ def Fit_layer (data_train, layer_weights, layer_data = None, layerkey = "layer",
     if layer_data is None:
         layer_data = data_train.obs
     #
-    tdatax = np.expand_dims(data_train.X, axis = 0)
+    traindata = (data_train.X.A if issparse(data_train.X) else data_train.X)
+    tdatax = np.expand_dims(traindata, axis = 0)
     tdata_rs = np.swapaxes(tdatax, 1, 2)
     DataTra = wrap_gene_layer(tdata_rs, layer_data, layerkey)
     t_loader= torch.utils.data.DataLoader(DataTra, batch_size = batch_size, num_workers = num_workers, shuffle = True, worker_init_fn=seed_worker, generator=g)
@@ -87,7 +90,8 @@ def Fit_domain (data_train, domain_weights, domain_data = None, domainkey = "lay
     if domain_data is None:
         domain_data = data_train.obs
     #
-    tdatax = np.expand_dims(data_train.X, axis = 0)
+    traindata = (data_train.X.A if issparse(data_train.X) else data_train.X)
+    tdatax = np.expand_dims(traindata, axis = 0)
     tdata_rs = np.swapaxes(tdatax, 1, 2)
     DataTra = wrap_gene_domain(tdata_rs, domain_data, domainkey)
     t_loader= torch.utils.data.DataLoader(DataTra, batch_size = batch_size, num_workers = num_workers, shuffle = True, worker_init_fn=seed_worker, generator=g)
@@ -143,7 +147,8 @@ def Predict_domain (data_test, class_num,  path = "", filename = "PreOrg_domains
         truth_label = "psudo_label"
         location_data = pd.DataFrame(np.ones((data_test.shape[0],1)), columns = ["psudo_label"])
     ## Wrap up Validation data in to dataloader
-    vdatax = np.expand_dims(data_test.X, axis = 0)
+    testdata = (data_test.X.A if issparse(data_test.X) else data_test.X)
+    vdatax = np.expand_dims(testdata, axis = 0)
     vdata_rs = np.swapaxes(vdatax, 1, 2)
     DataVal = wrap_gene_domain(vdata_rs, location_data, truth_label)
     Val_loader= torch.utils.data.DataLoader(DataVal, batch_size=1, num_workers = 4)

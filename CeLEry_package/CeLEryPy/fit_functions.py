@@ -159,10 +159,14 @@ def Predict_domain (data_test, class_num,  path = "", filename = "PreOrg_domains
                        Val_loader = Val_loader,
                        class_num = class_num,
                        predtype = predtype)
+    if predtype == "probability":
+        return domain[0]
+    elif predtype == "deterministic":
+        return domain[1]
     return domain
 
 
-def report_prop_method_domain (folder, name, data_test, Val_loader, class_num, predtype):
+def report_prop_method_domain (folder, name, data_test, Val_loader, class_num):
     """
         Report the results of the proposed methods in comparison to the other method
         :folder: string: specified the folder that keep the proposed DNN method
@@ -190,9 +194,6 @@ def report_prop_method_domain (folder, name, data_test, Val_loader, class_num, p
     data_test.obs["pred_domain_str"] = coords_predict.astype(int).astype('str')
     payer_prob[:,0] = data_test.obs["pred_domain"]
     np.savetxt("{folder}/{name}_probmat.csv".format(folder = folder, name = name), payer_prob, delimiter=',')
-    if predtype == "probability":
-        return payer_prob
-    else:
-        return coords_predict
+    return [payer_prob[:,1:], coords_predict]
 
 

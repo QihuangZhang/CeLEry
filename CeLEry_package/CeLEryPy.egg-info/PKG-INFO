@@ -1,0 +1,54 @@
+Metadata-Version: 2.1
+Name: CeLEryPy
+Version: 1.0.0
+Summary: Leverage spatial transcriptomics data to recover cell locations in single-cell RNA RNA-seq
+Author-email: Qihuang Zhang <qihuang.zh@gmail.com>
+License: Copyright (c) 2022 The Python Packaging Authority
+        
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+Project-URL: Homepage, https://github.com/QihuangZhang/CeLEry
+Keywords: CeLEry,spatial transcriptomics,scRNA-seq
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# CeLEry
+## Leveraging  spatial  transcriptomics  data  to  recover cell  locationsin  single-cell 1RNA-seqwith CeLEry
+
+### Qihuang Zhang, Jian Hu, Kejie Li, Baohong Zhang, David Dai, Edward B. Lee, Rui Xiao, Mingyao Li*
+
+Single-cell RNA sequencing provides resourceful information to study the cells systematically. However, their locational information is usually unavailable. We present CeLEry, a supervised deep learning algorithm to recover the origin of tissues in assist of spatial transcriptomic data, integrating a data augmentation procedure via variational autoencoder to improve the robustness of methods in the overfitting and the data contamination. CeLEry provides a generic framework and can be implemented in multiple tasks depending on the research objectives, including the spatial coordinates discovery as well as the layer discovery. It can make use of the information of multiple tissues of spatial transcriptomics data. Thorough assessments exhibit that CeLEry achieves a leading performance compared to the state-of-art methods. We illustrated the usage of CeLEry in the discovery of neuron cell layers to study the development of Alzheimer's disease. The identified cell location information is valuable in many downstream analyses and can be indicative of the spatial organization of the tissues.
+
+## System Requirements
+Python support packages: torch>1.8, pandas>1.4, numpy>1.20, scipy, tqdm, scanpy>1.5, anndata, sklearn
+
+## To install package
+In the command, input
+```
+pip install CeLEryPy
+```
+
+
+To load the package, input
+```
+import CeLEry
+```

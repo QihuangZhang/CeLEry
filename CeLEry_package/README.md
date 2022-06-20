@@ -7,3 +7,15 @@ Single-cell RNA sequencing provides resourceful information to study the cells s
 
 ## System Requirements
 Python support packages: torch>1.8, pandas>1.4, numpy>1.20, scipy, tqdm, scanpy>1.5, anndata, sklearn
+
+## To install package
+In the command, input
+```
+pip install CeLEryPy
+```
+
+
+To load the package, input
+```
+import CeLEry
+```

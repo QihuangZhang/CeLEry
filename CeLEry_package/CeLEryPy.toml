@@ -1,3 +1,35 @@
 [build-system]
 requires = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "CeLEryPy"
+version = "1.0.0"
+description = "Leverage spatial transcriptomics data to recover cell locations in single-cell RNA RNA-seq"
+readme = "README.md"
+authors = [{ name = "Qihuang Zhang", email = "qihuang.zh@gmail.com" }, {name = "Jian Hu"}, {name = "Kejie Li"}, {name = Baohong Zhang}, {name = David Dai}, {name = Edward B. Lee}, {name = Rui Xiao}, {name = Mingyao Li}]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["CeLEry", "spatial transcriptomics", "scRNA-seq"]
+dependencies = [
+    "torch >= 1.8",
+    "pandas >= 1.4",
+    "numpy >= 1.20",
+    "scipy",
+    "tqdm",
+    "scanpy >= 1.5",
+    "anndata",
+    "sklearn",
+    "pickle"
+]
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/QihuangZhang/CeLEry"
+
+[project.scripts]
+realpython = "reader.__main__:main"

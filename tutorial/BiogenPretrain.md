@@ -199,4 +199,4 @@ Density_plot(obsdata_path, prediction_path, objectname)
 The output figures display the proportion of cells in the regions
 segmented in the training data.
 
-![prediction results](https://github.com/QihuangZhang/CeLEry/tree/main/docs/asserts/images/Density_plot_BiogenExample.png)
+![prediction results](figures/Density_plot_BiogenExample.png)

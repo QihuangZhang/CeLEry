@@ -15,6 +15,9 @@ import pickle
 
 from scipy.sparse import issparse
 
+import warnings
+warnings.filterwarnings('ignore',lineno='.*Trying to modify attribute.*')
+
 def seed_worker(worker_id):
     worker_seed = torch.initial_seed() % 2**32
     np.random.seed(worker_seed)
@@ -157,8 +160,7 @@ def Predict_domain (data_test, class_num,  path = "", filename = "PreOrg_domains
                        name = filename,
                        data_test = data_test,
                        Val_loader = Val_loader,
-                       class_num = class_num,
-                       predtype = predtype)
+                       class_num = class_num)
     if predtype == "probability":
         return domain[0]
     elif predtype == "deterministic":

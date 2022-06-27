@@ -1,4 +1,4 @@
-<h1><center>Biogen Pretrained Tutorial </center></h1>
+<h1><center>Biogen Pretrained Model Tutorial </center></h1>
 
 Author: Qihuang Zhang*, Jian Hu, Kejie Li, Baohong Zhang, David Dai,
 Edward B. Lee, Rui Xiao, Mingyao Li*
@@ -13,24 +13,24 @@ Edward B. Lee, Rui Xiao, Mingyao Li*
 4.  Visualization (in `R`)
 
 
-In this tutorial, we illustrate the usage of the CeLEry pretrain model
+In this tutorial, we illustrate the usage of the CeLEry pre-train model
 trained by Biogene mouse brain data (Li and Zhang, 2022). This model
-takes the gene expression input of 886 genes and produce a prediction
-probability vector to eight regions segemented from the spatial
+takes the gene expression input of 886 genes and produces a prediction
+probability vector to eight regions segmented from the spatial
 transcriptomics data.
 
-This tutorial can be independent of the CeLEry package. It does not
-require installing the CeLEry package.
+
+The prediction model in this tutorial is pre-trained using the spatial transcripitomics data (ID 075B). The domains were segemented using ``spaGCN``:
+
+![domain segementation](docs/asserts/images/segementation_8_075B.png)
+
+
+To implement this tutorial, the CeLEry python package needs to be installed. Please see the instruction for installation.  
 
 ## 1. Preparation 
 
-To implemente the model without installing CeLEry package, several
-helper functions are needed. The `pickle` package is used to load the
-pretrained model. Function `make_annData_query()` transform the raw
-input data into AnnData format and conduct data proprocessing, including
-normalizing the gene expression per cell and performing `log(1+p)`
-transcformation. The `get_zscore()` helps to normalized the gene
-expression so that batch effect can be removed.
+To implement this tutorial, several
+helper functions are needed. 
 
 
 ``` {.python}
@@ -47,8 +47,7 @@ from scipy.sparse import issparse
 
 ## 2. Load Data 
 
-Load scRNA-seq/snRNA-seq data. Example data can be download from [Li and
-Zhang (2022)](https://doi.org/10.5281/zenodo.6640285).
+Load scRNA-seq/snRNA-seq data. Example data can be download from [Li and Zhang (2022)](https://doi.org/10.5281/zenodo.6640285).
 
 ``` {.python}
 QueryData_raw = read_10x_h5("data/Biogen/7G-1/filtered_feature_bc_matrix.h5")
@@ -56,8 +55,7 @@ QueryData = cel.make_annData_query (QueryData_raw)
 ```
 
 
-It is import to make sure the query scRNA-seq/snRNA-seq contains all the
-gene in the trained model.
+It is important to make sure the query scRNA-seq/snRNA-seq contains all the gene in the trained model.
 
 ``` {.python}
 ## Load gene list
@@ -70,10 +68,9 @@ Qdata = QueryData[:,list(genenames)]
 cel.get_zscore(Qdata)
 ```
 
-#### 3. Apply Pre-trained CeLEry model to the snRNA data {#3-apply-pre-trained-celery-model-to-the-snrna-data}
+#### 3. Apply Pre-trained CeLEry model to the snRNA data
 
-The gene expression of the first cell (a 1X886 matrix) in the snRNA-seq
-data is given by:
+The gene expression of the first cell (a 1X886 matrix) in the snRNA-seq data is given by:
 
 ``` {.python}
 Qdata[0].X.A
@@ -82,11 +79,11 @@ Qdata[0].X.A
 Load the CeLEry prediction model which is located at the
 `"../output/Biogene/models"` named as `Org_domain_075B`. We use CeLEry
 function `Predict_domain()` to conduct domain prediction for each single
-cells in the scRNA-seq/snRNA-seq data. The detailed argument are
+cells in the scRNA-seq/snRNA-seq data. The detailed arguments are
 explained as follows:
 
 -   data_test: (AnnData object) the input scRNA-seq/snRNA-seq data
--   class_num: (int) the number of class to be predicted. This value
+-   class_num: (int) the number of classes to be predicted. This value
     should be consistent with the number of domains in the training
     model.
 -   path: (string) the location of the pre-trained model
@@ -94,10 +91,10 @@ explained as follows:
 -   predtype: (string) if predtype is \"probability\" (default) then a
     probability prediction matrix will be produced; if predtype is
     \"deterministic\", then the deterministic assignment based on the
-    maximun probability prediction will be returned; if predtype is
-    \"both\", then both prediction will be outputed.
+    maximum probability prediction will be returned; if predtype is
+    \"both\", then both predictions will be outputed.
 
-## 3. Prediction {#3-prediction}
+## 3. Prediction
 
 Prediction of the first cell
 
@@ -107,8 +104,8 @@ model_location = "pretrainmodel/Biogen/Pretrained_model_075B.obj"
 pred_cord = cel.Predict_domain(data_test = Qdata[0], class_num = 8, path = "pretrainmodel/Biogen", filename = "Pretrained_model_075B", predtype = "probability")
 ```
 
-Predict region labels of the entire scRNA-seq data and report the
-proportion of the cells on different domains.
+
+Predict region labels of the entire scRNA-seq data and report the proportion of the cells on each domain.
 
 ``` {.python}
 pred_cord_all = cel.Predict_domain(data_test = Qdata, class_num = 8, path = "pretrainmodel/Biogen", filename = "Pretrained_model_075B", predtype = "deterministic")
@@ -119,15 +116,29 @@ prop_weight
 prop_weight.to_csv("output/Biogen/prop_8_075B_7G-1.csv")
 ```
 
+The output of this example is:
 
-## 4. Visualization {#4-visualization}
+```
+0	0.280068876
+1	0.155832975
+2	0.102539819
+3	0.066465777
+4	0.151183814
+5	0.169436074
+6	0.056048214
+7	0.018424451
+```
+The first column corresponds to the domain in the training spatial transcriptomics data as in the previous figure. The second column reports the proportion of the cells located in different regions.
+
+
+## 4. Visualization
 
 For the following part, we use the `ggplot()` in `R` to visualize the
-the proportion predicted according to CeLEry. We are going to use the
-regions segemented from the spatial transcriptomics data to illustrate
-how the distribution looks like.
+proportion predicted according to CeLEry. We are going to use the
+regions segmented from the spatial transcriptomics data to illustrate
+what the distribution looks like.
 
-### 4.1 R packages {#41-r-packages}
+### 4.1 R packages
 
 ``` {.R}
 library(ggplot2)
@@ -137,15 +148,15 @@ outputdir <- "output/Biogen/plots/"
 ```
 
 
-### 4.2 Plotting Functions {#42-plotting-functions}
+### 4.2 Plotting Functions
 
 The Density plot function use two input paths.
 
 -   `obsdata_path` specifies the path of the observation data from the
-    spatial transcriptomics data that are used to trained the data,
+    spatial transcriptomics data that are used to train the data,
     which are saved from the \".obs\" of the annotated data object in
-    python. This files contain the spot ID, the locations of the spots
-    and the regions information, and will be used as the background of
+    python. These files contain the spot ID, the locations of the spots,
+    and the region ID, and will be used as the background of
     the visualization.
 
 -   `prediction_path` specifies where the path of the prediction results
@@ -186,5 +197,6 @@ Density_plot(obsdata_path, prediction_path, objectname)
 ```
 
 The output figures display the proportion of cells in the regions
-segemented in the training data.
+segmented in the training data.
 
+![prediction results](docs/asserts/images/Density_plot_BiogenExample.png)

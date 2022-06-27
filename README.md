@@ -33,6 +33,11 @@ https://github.com/QihuangZhang/CeLEry/blob/main/tutorial/tutorial.ipynb
 <br>
 
 
+The tutorial of the Biogen pretrain model can be accessible from : 
+<br>
+https://github.com/QihuangZhang/CeLEry/blob/main/tutorial/BiogenPretrain.md
+<br>
+
 ## System Requirements
 Python support packages: torch>1.8, pandas>1.4, numpy>1.20, scipy, tqdm, scanpy>1.5, anndata, sklearn, pickle, random, math, os
 

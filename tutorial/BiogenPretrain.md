@@ -22,7 +22,7 @@ transcriptomics data.
 
 The prediction model in this tutorial is pre-trained using the spatial transcripitomics data (ID 075B). The domains were segemented using ``spaGCN``:
 
-![domain segementation](docs/asserts/images/segementation_8_075B.png)
+![domain segementation](https://github.com/QihuangZhang/CeLEry/tree/main/docs/asserts/images/segementation_8_075B.png)
 
 
 To implement this tutorial, the CeLEry python package needs to be installed. Please see the instruction for installation.  
@@ -199,4 +199,4 @@ Density_plot(obsdata_path, prediction_path, objectname)
 The output figures display the proportion of cells in the regions
 segmented in the training data.
 
-![prediction results](docs/asserts/images/Density_plot_BiogenExample.png)
+![prediction results](https://github.com/QihuangZhang/CeLEry/tree/main/docs/asserts/images/Density_plot_BiogenExample.png)

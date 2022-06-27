@@ -1,33 +1,8 @@
----
-jupyter:
-  kernelspec:
-    display_name: Python 3
-    language: python
-    name: python3
-  language_info:
-    codemirror_mode:
-      name: ipython
-      version: 3
-    file_extension: .py
-    mimetype: text/x-python
-    name: python
-    nbconvert_exporter: python
-    pygments_lexer: ipython3
-    version: 3.8.8
-  nbformat: 4
-  nbformat_minor: 2
----
-
-::: {.cell .markdown}
-```{=html}
 <h1><center>Biogen Pretrained Tutorial - independent version</center></h1>
-```
-```{=html}
-<center>
-```
+
 Author: Qihuang Zhang*, Jian Hu, Kejie Li, Baohong Zhang, David Dai,
 Edward B. Lee, Rui Xiao, Mingyao Li*
-:::
+
 
 ::: {.cell .markdown}
 ## Outline

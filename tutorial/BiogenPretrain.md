@@ -1,4 +1,4 @@
-<h1><center>Biogen Pretrained Model Tutorial </center></h1>
+<h1><center>Biogen Pre-trained Model Tutorial </center></h1>
 
 Author: Qihuang Zhang*, Jian Hu, Kejie Li, Baohong Zhang, David Dai,
 Edward B. Lee, Rui Xiao, Mingyao Li*

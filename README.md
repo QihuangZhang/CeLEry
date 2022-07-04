@@ -45,5 +45,5 @@ Python support packages: torch>1.8, pandas>1.4, numpy>1.20, scipy, tqdm, scanpy>
 # Install packages
 In the command, input
 ```
-pip install -i https://test.pypi.org/simple/ CeLEryPy
+pip install CeLEryPy
 ```

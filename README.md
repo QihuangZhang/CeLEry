@@ -27,7 +27,7 @@ The [**CeLEry**](https://github.com/QihuangZhang/CeLEry) package is an implement
 ## Tutorial
 
 
-A Jupyter Notebook of the tutorial (*UNDER CONSTRUCTION*) is accessible from : 
+A Jupyter Notebook of the tutorial is accessible from : 
 <br>
 https://github.com/QihuangZhang/CeLEry/blob/main/tutorial/tutorial.ipynb
 <br>

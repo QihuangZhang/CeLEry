@@ -47,3 +47,5 @@ In the command, input
 ```
 pip install CeLEryPy
 ```
+
+The installation of CeLEry python package takes approximately 5 minumtes.

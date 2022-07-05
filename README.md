@@ -38,6 +38,25 @@ The tutorial of the Biogen pretrain model can be accessible from :
 https://github.com/QihuangZhang/CeLEry/blob/main/tutorial/BiogenPretrain.md
 <br>
 
+# System Requirements
+
+## Hardware Requirements
+
+The `lol` package requires only a standard computer with enough RAM to support the operations defined by a user. For minimal performance, this will be a computer with about 2 GB of RAM. For optimal performance, we recommend a computer with the following specs:
+
+RAM: 16+ GB  
+CPU: 4+ cores, 3.3+ GHz/core
+
+## Software Requirements
+
+### OS Requirements
+
+The package development version is tested on *Linux* operating systems. The developmental version of the package has been tested on the following systems:
+
+Linux: kernel 3.10.0 
+Mac OSX:  
+Windows:  
+
 ## System Requirements
 Python support packages: torch>1.8, pandas>1.4, numpy>1.20, scipy, tqdm, scanpy>1.5, anndata, sklearn, pickle, random, math, os
 

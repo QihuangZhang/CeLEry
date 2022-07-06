@@ -58,7 +58,7 @@ Mac OSX:
 Windows:  
 
 ## System Requirements
-Python support packages: torch>1.8, pandas>1.4, numpy>1.20, scipy, tqdm, scanpy>1.5, anndata, sklearn, pickle, random, math, os
+Python (>3.8) support packages: torch>1.8, pandas>1.4, numpy>1.20, scipy, tqdm, scanpy>1.5, anndata, sklearn, pickle, random, math, os
 
 
 # Install packages

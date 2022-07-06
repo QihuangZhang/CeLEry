@@ -42,7 +42,7 @@ https://github.com/QihuangZhang/CeLEry/blob/main/tutorial/BiogenPretrain.md
 
 ## Hardware Requirements
 
-The `lol` package requires only a standard computer with enough RAM to support the operations defined by a user. For minimal performance, this will be a computer with about 2 GB of RAM. For optimal performance, we recommend a computer with the following specs:
+The `CeLEry` package requires only a standard computer with enough RAM to support the operations defined by a user. For minimal performance, this will be a computer with about 2 GB of RAM. For optimal performance, we recommend a computer with the following specs:
 
 RAM: 16+ GB  
 CPU: 4+ cores, 3.3+ GHz/core

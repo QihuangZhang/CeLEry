@@ -14,7 +14,7 @@ Edward B. Lee, Rui Xiao, Mingyao Li*
 4.  Run CeLEry
 5.  Data Augmentation
 
-### 1. Installation {#1-installation}
+### 1. Installation 
 
 To install CeLEry package you must make sure that your python version is
 over 3.5. If you don't know the version of python you can check it by:
@@ -241,9 +241,7 @@ model_train = cel.Fit_layer (data_train = Rdata, layer_weights = layer_weights, 
 
 model_train
 ```
-:::
 
-::: {.cell .markdown}
 
 <!-- ### 5. Data Augmentation 
 

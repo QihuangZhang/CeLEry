@@ -67,10 +67,13 @@ conda deactivate
 ### 2. Import python modules
 
 ```
+import scanpy as sc
+import torch
+import CeLEry as cel
+
 import os,csv,re
 import pandas as pd
 import numpy as np
-import scanpy as sc
 import math
 from skimage import io, color
 
@@ -81,8 +84,7 @@ warnings.filterwarnings("ignore")
 import pickle
 
 import json
-os.chdir("CeLEryPython")
-import CeLEry as cel
+
 ```
 
 ``` {.python}
@@ -135,9 +137,20 @@ adata.var["genename"] = adata.var.index.astype("str")
 adata.write_h5ad("../tutorial/data/151673/sample_data.h5ad")
 """
 #Read in gene expression and spatial location
-Qdata = sc.read("../tutorial/data/MouseSCToy.h5ad")
-Rdata = sc.read("../tutorial/data/MousePosteriorToy.h5ad")
+Qdata = sc.read("data/tutorial/MouseSCToy.h5ad")
+Rdata = sc.read("data/tutorial/MousePosteriorToy.h5ad")
+
+Rdata
 ```
+
+```
+>>> Rdata
+AnnData object with n_obs × n_vars = 5824 × 356
+    obs: 'x', 'y', 'inner'
+    var: 'genename'
+```
+
+Here, `Qdata` stores the annodated query data (scRNA-seq/snRNA-seq data) and `Rdata` is the annoated reference data collected from spatial transcriptomics.
 
 Before inplementing our methods, we often normalize both the reference
 data and the query data:
@@ -159,13 +172,13 @@ In the first task, we train a deep neural network using the reference
 data, and then apply the trained model to predict the location of the
 cells (or spots) in the query data.
 
-##### Training
+##### Training 
 
 First, we train the model using spatial transcriptomic data. The trained
-model will also automately save as an `.obj` file in the specified path.
+model will also automately save as an `.obj` file in the specified path. This step can take an hour depending on the structure of the neural network.
 
 ``` {.python}
-model_train = cel.Fit_cord (data_train = Rdata, hidden_dims = [30, 25, 15], num_epochs_max = 500, path = "output/example", filename = "PreOrg_Mousesc")
+model_train = cel.Fit_cord (data_train = Rdata, hidden_dims = [30, 25, 15], num_epochs_max = 500, path = "output/tutorial", filename = "Org_Mousesc")
 ```
 
 
@@ -182,18 +195,13 @@ The fitting function `Fit_cord` involves the following parameters:
 
 -   path: the directory that saving the model object
 
--   filename: the name of the model object to be saved
+-   filename: the name of the model object to be saved to the path.
 
 ##### Prediction
 
 Then, we apply the trained model to the query data to predict the
 coordinates of the cells.
 
-``` {.python}
-pred_cord = cel.Predict_cord (data_test = Qdata, path = "output/example", filename = "PreOrg_Mousesc")
-
-pred_cord
-```
 
 The prediction function `Predict_cord` contains three arguments:
 
@@ -206,7 +214,30 @@ The prediction function `Predict_cord` contains three arguments:
 The method implementation outputs the 2D coordinates in `pred_cord`. A
 `.csv` file will also saved with the name \"predmatrix\".
 
-#### 4.2 Analysis Task 2: Layer Recovery {#42-analysis-task-2-layer-recovery}
+
+Example code:
+
+``` {.python}
+pred_cord = cel.Predict_cord (data_test = Qdata, path = "output/tutorial", filename = "Org_Mousesc")
+
+pred_cord
+```
+
+Output:
+
+```
+array([[0.67726576, 0.49435037],
+       [0.42489582, 0.51810944],
+       [0.07367212, 0.4977431 ],
+       ...,
+       [0.72734278, 0.43093637],
+       [0.63597023, 0.10852443],
+       [0.3674576 , 0.50103331]])
+```
+
+Each row of the output matrix represents a 2D coordinates of the predicted cells.
+
+#### 4.2 Analysis Task 2: Layer Recovery
 
 In the second task, we use CeLEry to classify the cells into different
 layers. First, we load the spatial transcriptomics data with annotation
@@ -214,32 +245,63 @@ for layers together with a single cell RNA data collected from an
 Alzheimer\'s study.
 
 ``` {.python}
-Qdata = sc.read("../tutorial/data/AlzheimerToy.h5ad")
-Rdata = sc.read("../tutorial/data/DataLayerToy.h5ad")
+Qdata = sc.read("data/tutorial/AlzheimerToy.h5ad")
+Rdata = sc.read("data/tutorial/DataLayerToy.h5ad")
 
 cel.get_zscore(Qdata)
 cel.get_zscore(Rdata)
 ```
 
-The sample size of the spots in each layer could be very different,
-leading to the poor performance of the classification in some layers. We
-consider weighting the sample from each layer. A typical way to choose
-weight is to use $1/sample size$.
+For many times, the gene set in query data (`Qdata`) is different from the reference data (`Rdata`). To ensure the model trained by reference data is applicable to the query data, it is essential to the genes sets are identical for both datasets.
 
 ``` {.python}
-layer_count =  Rdata.obs["Layer"].value_counts().sort_index()
-layer_weight = layer_count[7]/layer_count[0:7]
-layer_weights = torch.tensor(layer_weight.to_numpy())
+common_gene = list(set(Qdata.var_names) & set(Rdata.var_names))
+#
+Query_select = Qdata[:,common_gene]
+Reference_select = Rdata[:,common_gene]
 ```
 
-We train the model using the function `Fit_layer`. The model will
-returned and also save as an `.obj` object to be loaded later.
+Output of comparison after gene filtering:
+``` {.python}
+>>> Qdata
+AnnData object with n_obs × n_vars = 3000 × 26423
+    obs: 'cellname', 'sample', 'groupid', 'final_celltype', 'maxprob', 'imaxprob', 'trem2', 'atscore', 'apoe', 'sampleID', 'n_counts'
+    var: 'Ensembl', 'genename', 'n_cells'
+>>> Query_select
+View of AnnData object with n_obs × n_vars = 3000 × 1134
+    obs: 'cellname', 'sample', 'groupid', 'final_celltype', 'maxprob', 'imaxprob', 'trem2', 'atscore', 'apoe', 'sampleID', 'n_counts'
+    var: 'Ensembl', 'genename', 'n_cells'
+```
+
+
+The sample size of the spots in each layer could be very different, leading to the poor performance of the classification in some layers. We consider weighting the sample from each layer. A typical way to choose weight is to use $1/sample size$.
 
 ``` {.python}
-model_train = cel.Fit_layer (data_train = Rdata, layer_weights = layer_weights, layerkey = "Layer", 
-                             hidden_dims = [30, 25, 15], num_epochs_max = 500, path = "output/example", filename = "PreOrg_layer")
+layer_count =  Reference_select.obs["Layer"].value_counts().sort_index()
+layer_weight = layer_count[7]/layer_count[0:7]
+layer_weights = torch.tensor(layer_weight.to_numpy())
+layer_weights
+```
 
-model_train
+Output:
+```
+tensor([1.8791, 2.0277, 0.5187, 2.3532, 0.7623, 0.7413, 1.0000],
+       dtype=torch.float64)
+```
+
+
+We train the model using the function `Fit_layer`. The model will
+returned and also save as an `.obj` object to be loaded later. This step can take an hour according to the structure of the neural network.
+
+``` {.python}
+model_train = cel.Fit_layer (data_train = Reference_select, layer_weights = layer_weights, layerkey = "Layer", 
+                             hidden_dims = [30, 25, 15], num_epochs_max = 500, path = "output/tutorial", filename = "Org_layer")
+```
+
+Then, we apply the trained model to the scRNA-seq/snRNA-seq data:
+
+```
+pred_layer = cel.Predict_layer(data_test = Query_select, class_num = 7, path = "output/tutorial", filename = "Org_layer", predtype = "deterministic")
 ```
 
 

@@ -199,3 +199,63 @@ def report_prop_method_domain (folder, name, data_test, Val_loader, class_num):
     return [payer_prob[:,1:], coords_predict]
 
 
+def report_prop_method_layer (folder, name, data_test, Val_loader, class_num):
+    """
+        Report the results of the proposed methods in comparison to the other method
+        :folder: string: specified the folder that keep the proposed DNN method
+        :name: string: specified the name of the DNN method, also will be used to name the output files
+        :dataSection2: AnnData: the data of Section 2
+        :traindata: AnnData: the data used in training data. This is only needed for compute SSIM
+        :Val_loader: Dataload: the validation data from dataloader
+        :outname: string: specified the name of the output, default is the same as the name
+        :ImageSec2: Numpy: the image data that are refering to
+    """
+    filename2 = "{folder}/{name}.obj".format(folder = folder, name = name)
+    filehandler = open(filename2, 'rb') 
+    DNNmodel = pickle.load(filehandler)
+    #
+    coords_predict = np.zeros(data_test.obs.shape[0])
+    payer_prob = np.zeros((data_test.obs.shape[0],class_num+2))
+    for i, img in enumerate(Val_loader):
+        recon = DNNmodel(img)
+        logitsvalue = np.squeeze(torch.sigmoid(recon[0]).detach().numpy(), axis = 0)
+        if (logitsvalue[class_num-2] == 1):
+            coords_predict[i] = class_num
+            payer_prob[i,(class_num + 1)] = 1
+        else:
+            logitsvalue_min = np.insert(logitsvalue, 0, 1, axis=0)
+            logitsvalue_max = np.insert(logitsvalue_min, class_num, 0, axis=0) 
+            prb = np.diff(logitsvalue_max)
+            prbfull = -prb.copy() 
+            coords_predict[i] = np.where(prbfull == prbfull.max())[0].max() + 1
+            payer_prob[i,2:] = prbfull
+    #
+    data_test.obs["pred_layer"] = coords_predict.astype(int)
+    payer_prob[:,0] = data_test.obs["Layer"]
+    payer_prob[:,1] = data_test.obs["pred_layer"]
+    data_test.obs["pred_layer_str"] = coords_predict.astype(int).astype('str')
+    np.savetxt("{folder}/{name}_probmat.csv".format(folder = folder, name = name), payer_prob, delimiter=',')
+    return [payer_prob[:,1:], coords_predict]
+
+def Predict_layer (data_test, class_num,  path = "", filename = "PreOrg_layernsc", truth_label = None, predtype = "probability"):
+    if truth_label is None:
+        truth_label = "psudo_label"
+        location_data = pd.DataFrame(np.ones((data_test.shape[0],1)), columns = ["psudo_label"])
+        location_data.iloc[0] = 2
+    ## Wrap up Validation data in to dataloader
+    testdata = (data_test.X.A if issparse(data_test.X) else data_test.X)
+    vdatax = np.expand_dims(testdata, axis = 0)
+    vdata_rs = np.swapaxes(vdatax, 1, 2)
+    DataVal = wrap_gene_layer(vdata_rs, location_data, layerkey = truth_label)
+    Val_loader= torch.utils.data.DataLoader(DataVal, batch_size=1, num_workers = 4)
+    #
+    domain = report_prop_method_layer(folder = path,
+                       name = filename,
+                       data_test = data_test,
+                       Val_loader = Val_loader,
+                       class_num = class_num)
+    if predtype == "probability":
+        return domain[0]
+    elif predtype == "deterministic":
+        return domain[1]
+    return domain

@@ -161,7 +161,7 @@ def Predict_domain (data_test, class_num,  path = "", filename = "PreOrg_domains
                        data_test = data_test,
                        Val_loader = Val_loader,
                        class_num = class_num)
-    if predtype == "probability":
+    if predtype == "probabilistic":
         return domain[0]
     elif predtype == "deterministic":
         return domain[1]
@@ -215,24 +215,23 @@ def report_prop_method_layer (folder, name, data_test, Val_loader, class_num):
     DNNmodel = pickle.load(filehandler)
     #
     coords_predict = np.zeros(data_test.obs.shape[0])
-    payer_prob = np.zeros((data_test.obs.shape[0],class_num+2))
+    payer_prob = np.zeros((data_test.obs.shape[0],class_num+1))
     for i, img in enumerate(Val_loader):
         recon = DNNmodel(img)
         logitsvalue = np.squeeze(torch.sigmoid(recon[0]).detach().numpy(), axis = 0)
         if (logitsvalue[class_num-2] == 1):
             coords_predict[i] = class_num
-            payer_prob[i,(class_num + 1)] = 1
+            payer_prob[i,class_num] = 1
         else:
             logitsvalue_min = np.insert(logitsvalue, 0, 1, axis=0)
             logitsvalue_max = np.insert(logitsvalue_min, class_num, 0, axis=0) 
             prb = np.diff(logitsvalue_max)
             prbfull = -prb.copy() 
             coords_predict[i] = np.where(prbfull == prbfull.max())[0].max() + 1
-            payer_prob[i,2:] = prbfull
+            payer_prob[i,1:] = prbfull
     #
     data_test.obs["pred_layer"] = coords_predict.astype(int)
-    payer_prob[:,0] = data_test.obs["Layer"]
-    payer_prob[:,1] = data_test.obs["pred_layer"]
+    payer_prob[:,0] =  data_test.obs["pred_layer"]
     data_test.obs["pred_layer_str"] = coords_predict.astype(int).astype('str')
     np.savetxt("{folder}/{name}_probmat.csv".format(folder = folder, name = name), payer_prob, delimiter=',')
     return [payer_prob[:,1:], coords_predict]
@@ -254,7 +253,7 @@ def Predict_layer (data_test, class_num,  path = "", filename = "PreOrg_layernsc
                        data_test = data_test,
                        Val_loader = Val_loader,
                        class_num = class_num)
-    if predtype == "probability":
+    if predtype == "probabilistic":
         return domain[0]
     elif predtype == "deterministic":
         return domain[1]

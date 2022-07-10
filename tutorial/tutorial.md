@@ -264,11 +264,11 @@ Reference_select = Rdata[:,common_gene]
 Output of comparison after gene filtering:
 ``` {.python}
 >>> Qdata
-AnnData object with n_obs × n_vars = 3000 × 26423
+AnnData object with n_obs × n_vars = 2452 × 1134
     obs: 'cellname', 'sample', 'groupid', 'final_celltype', 'maxprob', 'imaxprob', 'trem2', 'atscore', 'apoe', 'sampleID', 'n_counts'
     var: 'Ensembl', 'genename', 'n_cells'
 >>> Query_select
-View of AnnData object with n_obs × n_vars = 3000 × 1134
+View of AnnData object with n_obs × n_vars = 2452 × 1134
     obs: 'cellname', 'sample', 'groupid', 'final_celltype', 'maxprob', 'imaxprob', 'trem2', 'atscore', 'apoe', 'sampleID', 'n_counts'
     var: 'Ensembl', 'genename', 'n_cells'
 ```
@@ -301,9 +301,37 @@ model_train = cel.Fit_layer (data_train = Reference_select, layer_weights = laye
 Then, we apply the trained model to the scRNA-seq/snRNA-seq data:
 
 ```
-pred_layer = cel.Predict_layer(data_test = Query_select, class_num = 7, path = "output/tutorial", filename = "Org_layer", predtype = "deterministic")
+pred_layer = Predict_layer(data_test = Query_select, class_num = 7, path = "output/tutorial", filename = "Org_layer", predtype = "deterministic")
+pred_layer
 ```
 
+Output:
+```
+array([4., 4., 6., ..., 6., 5., 4.])
+```
+
+```
+probability_each_layer = Predict_layer(data_test = Query_select, class_num = 7, path = "output/tutorial", filename = "Org_layer", predtype = "probabilistic")
+probability_each_layer
+```
+
+Output:
+```
+array([[ 2.27034092e-04,  1.87861919e-02,  3.39182794e-01, ...,
+         6.73830733e-02,  1.59902696e-03,  5.36697644e-06],
+       [ 3.27110291e-04,  2.68441439e-02,  4.18585479e-01, ...,
+         4.77917679e-02,  1.11017306e-03,  3.72435829e-06],
+       [-0.00000000e+00,  4.52995300e-06,  1.26361847e-04, ...,
+         1.24190569e-01,  8.50280046e-01,  2.23746095e-02],
+       ...,
+       [ 1.19209290e-07,  9.77516174e-06,  2.75790691e-04, ...,
+         2.34772027e-01,  7.47992218e-01,  1.03732459e-02],
+       [ 2.26497650e-06,  1.93536282e-04,  5.41210175e-03, ...,
+         7.42786407e-01,  1.36679530e-01,  5.30853984e-04],
+       [ 7.78675079e-04,  6.15803003e-02,  5.94597340e-01, ...,
+         2.06700731e-02,  4.66533442e-04,  1.56409408e-06]])
+
+```
 
 <!-- ### 5. Data Augmentation 
 

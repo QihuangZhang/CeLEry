@@ -301,7 +301,7 @@ model_train = cel.Fit_layer (data_train = Reference_select, layer_weights = laye
 Then, we apply the trained model to the scRNA-seq/snRNA-seq data:
 
 ```
-pred_layer = Predict_layer(data_test = Query_select, class_num = 7, path = "output/tutorial", filename = "Org_layer", predtype = "deterministic")
+pred_layer = cel.Predict_layer(data_test = Query_select, class_num = 7, path = "output/tutorial", filename = "Org_layer", predtype = "deterministic")
 pred_layer
 ```
 
@@ -311,7 +311,7 @@ array([4., 4., 6., ..., 6., 5., 4.])
 ```
 
 ```
-probability_each_layer = Predict_layer(data_test = Query_select, class_num = 7, path = "output/tutorial", filename = "Org_layer", predtype = "probabilistic")
+probability_each_layer = cel.Predict_layer(data_test = Query_select, class_num = 7, path = "output/tutorial", filename = "Org_layer", predtype = "probabilistic")
 probability_each_layer
 ```
 

@@ -29,7 +29,7 @@ The [**CeLEry**](https://github.com/QihuangZhang/CeLEry) package is an implement
 
 A Jupyter Notebook of the tutorial is accessible from : 
 <br>
-https://github.com/QihuangZhang/CeLEry/blob/main/tutorial/tutorial.ipynb
+https://github.com/QihuangZhang/CeLEry/blob/main/tutorial/tutorial.md
 <br>
 
 

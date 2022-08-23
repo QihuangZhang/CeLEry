@@ -16,7 +16,7 @@ import pickle
 from scipy.sparse import issparse
 
 import warnings
-warnings.filterwarnings('ignore',lineno='.*Trying to modify attribute.*')
+# warnings.filterwarnings('ignore',lineno='.*Trying to modify attribute.*')
 
 def seed_worker(worker_id):
     worker_seed = torch.initial_seed() % 2**32

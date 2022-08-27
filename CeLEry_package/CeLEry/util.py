@@ -110,39 +110,39 @@ def getGeneImg (datainput, emptypixel, geneset = None):
 			all_arr.append(img)
 		datainput.GeneImg = np.stack(all_arr)			
 
-def getGeneImgSparse (adata, emptypixel):
-	# Transform the AnnData file into Genes of images for sparse matrix format
-	# adata: the input data of AnnData object
-	# emptypixel: a float that indicate the value on the missing pixel
-	x = adata.obs.iloc[:,0]
-	y = adata.obs.iloc[:,0]
-	xmin = x.min().iloc[0]
-	xmax = x.max().iloc[0]
-	ymin = y.min().iloc[0]
-	ymax = y.max().iloc[0]
-	## Append a one-side padding if the axis is odd
-	if ((xmax-xmin+1) % 2 == 0):
-		xlim = xmax-xmin+2
-	else:
-		xlim = xmax-xmin+1
-	if ((ymax-ymin+1) % 2 == 0):
-		ylim = ymax-ymin+2
-	else:
-		ylim = ymax-ymin+1 
-	shape = (xlim,ylim)
-	all_arr = []
-	firstIteration = True
-	for i in tqdm(range(adata.X.shape[1])):
-		z = adata.X[:,i] 
-		zmin = z.min()
-		zmax = z.max()
-		# create array for image : zmax+1 is the default value
-		img = np.array(np.ones(shape)*emptypixel)
-		for inp in range(x.shape[0]):
-			if (z[inp,0]!=emptypixel):
-				img[x.iloc[inp]-xmin,y.iloc[inp]-ymin]=z[inp,0]
-		all_arr.append(img)
-	adata.GeneImg = np.stack(all_arr)		
+# def getGeneImgSparse (adata, emptypixel):
+# 	# Transform the AnnData file into Genes of images for sparse matrix format
+# 	# adata: the input data of AnnData object
+# 	# emptypixel: a float that indicate the value on the missing pixel
+# 	x = adata.obs.iloc[:,0]
+# 	y = adata.obs.iloc[:,0]
+# 	xmin = x.min().iloc[0]
+# 	xmax = x.max().iloc[0]
+# 	ymin = y.min().iloc[0]
+# 	ymax = y.max().iloc[0]
+# 	## Append a one-side padding if the axis is odd
+# 	if ((xmax-xmin+1) % 2 == 0):
+# 		xlim = xmax-xmin+2
+# 	else:
+# 		xlim = xmax-xmin+1
+# 	if ((ymax-ymin+1) % 2 == 0):
+# 		ylim = ymax-ymin+2
+# 	else:
+# 		ylim = ymax-ymin+1 
+# 	shape = (xlim,ylim)
+# 	all_arr = []
+# 	firstIteration = True
+# 	for i in tqdm(range(adata.X.shape[1])):
+# 		z = adata.X[:,i] 
+# 		zmin = z.min()
+# 		zmax = z.max()
+# 		# create array for image : zmax+1 is the default value
+# 		img = np.array(np.ones(shape)*emptypixel)
+# 		for inp in range(x.shape[0]):
+# 			if (z[inp,0]!=emptypixel):
+# 				img[x.iloc[inp]-xmin,y.iloc[inp]-ymin]=z[inp,0]
+# 		all_arr.append(img)
+# 	adata.GeneImg = np.stack(all_arr)		
 
 
 def plotGeneImg (img, filename = None, range = None, plotcolor = 'YlGnBu'):
@@ -333,18 +333,23 @@ def plot_confusion_matrix (referadata, filename, nlayer = 7):
 	# confplot = conf_mat_fig.get_figure()    
 	# confplot.savefig("{filename}.png".format(filename = filename), dpi=400)
 
-def make_annData_spatial (adata, spatial, min_cells = 3):
+def make_annData_spatial (adata, spatial, min_cells = 3, filtered = False):
     """ 
     adata: an annData file for the transcriptomics data
     spatial: an pandas dataframe recording the location information for each spot
     """
-    adata.obs["select"] = spatial[1]
-    adata.obs["x_cord"] = spatial[2]
-    adata.obs["y_cord"] = spatial[3]
-    adata.obs["x_pixel"] = spatial[4]
-    adata.obs["y_pixel"] = spatial[5]
-    # Select captured samples
-    adata = adata[adata.obs["select"] == 1]
+    if filtered == False:
+        adata.obs["select"] = spatial[1]
+        adata.obs["x_cord"] = spatial[2]
+        adata.obs["y_cord"] = spatial[3]
+        adata.obs["x_pixel"] = spatial[4]
+        adata.obs["y_pixel"] = spatial[5]
+        # Select captured samples
+        adata = adata[adata.obs["select"] == 1]
+    else:
+        spatialsub = spatial[spatial.iloc[:,0] == 1]
+        adata.obs = adata.obs.join(spatialsub)
+        adata.obs.columns = ['select', 'x_cord', 'y_cord', 'x_pixel', 'y_pixel']
     adata.var_names = [i.upper() for i in list(adata.var_names)]
     adata.var["genename"] = adata.var.index.astype("str")
     #

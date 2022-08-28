@@ -140,11 +140,10 @@ def Pred_Density (coords, referadata, referlocation):
 	return(img_predict)
 	
 
-def RelocationPlot (coords, referadata, referlocation, filename):
+def RelocationPlot (coords, referlocation, filename = None):
 	"""
 		Report the prediction distribution regarding the number of prediction fall in each spot/pixel
 		:coords: numpy [Length_Locations x 2]: the predicted coordinates. Each cell in [0,1]
-		:referadata: AnnData: the in the annotated data format
 		:referlocation: dataframe [Length_Locations x 2]: the true location in the data
 		:return: float: the calculated SSIM statistics  
 	"""
@@ -157,19 +156,22 @@ def RelocationPlot (coords, referadata, referlocation, filename):
 	referymax = refery.max()
 	xlen = referxmax - referxmin + 1
 	ylen = referymax - referymin + 1
-		
+	#	
 	for inp in range(coords.shape[0]):
 		x_pixel_pred = floor(coords[inp,0]*xlen)
 		y_pixel_pred = floor(coords[inp,1]*ylen)
 		xvalues = [referx[inp]- referxmin,x_pixel_pred]
 		yvalues = [refery[inp]- referymin,y_pixel_pred]
 		plt.plot(yvalues, xvalues, color = "#555b6e", alpha = 0.5, lw = 0.8)
-	
+	#
 	plt.scatter(refery - referymin, referx - referxmin,  marker='^', color= "#bee3db") # 
 	plt.scatter(coords[:,1]*ylen, coords[:,0]*xlen, marker='o', color= "#ffd6ba") #, color= "ffd6ba"
-
+	#
 	plt.gca().invert_yaxis()
-	plt.savefig(filename + '.pdf')
+	if filename is None:
+		plt.show()
+	else:
+		plt.savefig(filename + '.pdf')
 
 
 

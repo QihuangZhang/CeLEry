@@ -58,6 +58,9 @@ class DNN(nn.Module):
 
 
 class DNNordinal_v2(DNN):
+	"""
+	 This model seperate the white matters from the grey matters (L1-L6)
+	"""
 	def __init__(self,  
 		# in_channels: int,
 		in_channels: int,

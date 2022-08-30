@@ -18,6 +18,7 @@ class DNN(nn.Module):
 
 		self.fclayer1 = nn.Sequential( 
 			nn.Linear(in_channels, hidden_dims[0]),
+			nn.Dropout(0.25),
 			# nn.BatchNorm1d(hidden_dims[0]),
 			nn.ReLU())
 		self.fclayer2 = nn.Sequential( 

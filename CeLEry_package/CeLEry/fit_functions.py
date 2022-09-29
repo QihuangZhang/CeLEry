@@ -145,7 +145,7 @@ def report_prop_method_sc (folder, name, data_test, Val_loader, outname = ""):
     np.savetxt("{folder}/{name}_predmatrix.csv".format(folder = folder, name = name), coords_predict, delimiter=",")
     return coords_predict
 
-def Predict_domain (data_test, class_num,  path = "", filename = "PreOrg_domainsc", truth_label = None, predtype = "probability"):
+def Predict_domain (data_test, class_num,  path = "", filename = "PreOrg_domainsc", truth_label = None, predtype = "probabilistic"):
     if truth_label is None:
         truth_label = "psudo_label"
         location_data = pd.DataFrame(np.ones((data_test.shape[0],1)), columns = ["psudo_label"])
@@ -236,7 +236,7 @@ def report_prop_method_layer (folder, name, data_test, Val_loader, class_num):
     np.savetxt("{folder}/{name}_probmat.csv".format(folder = folder, name = name), payer_prob, delimiter=',')
     return [payer_prob[:,1:], coords_predict]
 
-def Predict_layer (data_test, class_num,  path = "", filename = "PreOrg_layernsc", truth_label = None, predtype = "probability"):
+def Predict_layer (data_test, class_num,  path = "", filename = "PreOrg_layernsc", truth_label = None, predtype = "probabilistic"):
     if truth_label is None:
         truth_label = "psudo_label"
         location_data = pd.DataFrame(np.ones((data_test.shape[0],1)), columns = ["psudo_label"])

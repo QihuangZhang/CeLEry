@@ -1,5 +1,5 @@
 # CeLEry
-## Leveraging  spatial  transcriptomics  data  to  recover cell  locationsin  single-cell 1RNA-seqwith CeLEry
+## Leveraging  spatial  transcriptomics  data  to  recover cell  locationsin  single-cell RNA-seq with CeLEry
 
 ### Qihuang Zhang, Jian Hu, Kejie Li, Baohong Zhang, David Dai, Edward B. Lee, Rui Xiao, Mingyao Li*
 

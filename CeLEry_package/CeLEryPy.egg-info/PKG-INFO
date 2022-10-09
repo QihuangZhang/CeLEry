@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: CeLEryPy
-Version: 1.0.2
+Version: 1.0.3
 Summary: Leverage spatial transcriptomics data to recover cell locations in single-cell RNA RNA-seq
 Author-email: Qihuang Zhang <qihuang.zh@gmail.com>
 License: Copyright (c) 2022 The Python Packaging Authority
@@ -32,7 +32,7 @@ Description-Content-Type: text/markdown
 License-File: LICENSE
 
 # CeLEry
-## Leveraging  spatial  transcriptomics  data  to  recover cell  locationsin  single-cell 1RNA-seqwith CeLEry
+## Leveraging  spatial  transcriptomics  data  to  recover cell  locationsin  single-cell RNA-seq with CeLEry
 
 ### Qihuang Zhang, Jian Hu, Kejie Li, Baohong Zhang, David Dai, Edward B. Lee, Rui Xiao, Mingyao Li*
 

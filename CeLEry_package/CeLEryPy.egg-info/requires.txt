@@ -4,5 +4,6 @@ numpy>=1.20
 scipy
 tqdm
 scanpy>=1.5
+scikit-image
 anndata
 sklearn

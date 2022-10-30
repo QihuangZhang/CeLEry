@@ -18,7 +18,6 @@ class DNN(nn.Module):
 
 		self.fclayer1 = nn.Sequential( 
 			nn.Linear(in_channels, hidden_dims[0]),
-			nn.Dropout(0.25),
 			# nn.BatchNorm1d(hidden_dims[0]),
 			nn.ReLU())
 		self.fclayer2 = nn.Sequential( 
@@ -55,6 +54,46 @@ class DNN(nn.Module):
 		loss = F.mse_loss(cord_pred, input[1])
 		
 		return {'loss': loss}
+
+
+class DNN5(DNN):
+
+	def __init__(self,  
+				 in_channels: int,
+				 hidden_dims: List = None,			 
+				 **kwargs) -> None:
+		super(DNN, self).__init__()
+		
+		if hidden_dims is None:
+			hidden_dims = [200, 100, 50, 20, 10]
+
+		self.fclayer1 = nn.Sequential( 
+			nn.Linear(in_channels, hidden_dims[0]),
+			nn.ReLU())
+		self.fclayer2 = nn.Sequential( 
+			nn.Linear(hidden_dims[0], hidden_dims[1]),
+			nn.ReLU())
+		self.fclayer3 = nn.Sequential( 
+			nn.Linear(hidden_dims[1], hidden_dims[2]),
+			nn.ReLU())
+		self.fclayer4 = nn.Sequential( 
+			nn.Linear(hidden_dims[2], hidden_dims[3]),
+			nn.ReLU())
+		self.fclayer5 = nn.Sequential( 
+			nn.Linear(hidden_dims[3], hidden_dims[4]),
+			nn.ReLU())
+		self.fclayer6 = nn.Sequential(
+			nn.Linear(hidden_dims[4], 2),
+			nn.Sigmoid())
+
+	def forward(self, input: Tensor, **kwargs) -> List[Tensor]:
+		z = self.fclayer1(input[0])
+		z = self.fclayer2(z)
+		z = self.fclayer3(z)
+		z = self.fclayer4(z)
+		z = self.fclayer5(z)
+		z = self.fclayer6(z)
+		return  [z,input]
 
 
 

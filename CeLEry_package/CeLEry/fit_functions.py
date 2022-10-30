@@ -8,6 +8,7 @@ from . datasetgenemap import wrap_gene_location
 from . datasetgenemap import wrap_gene_layer
 from . datasetgenemap import wrap_gene_domain
 from . DNN import DNN
+from . DNN import DNN5
 from . DNN import DNNordinal
 from . DNN import DNNdomain
 from . TrainerExe import TrainerExe
@@ -40,7 +41,10 @@ def Fit_cord (data_train, location_data = None, hidden_dims = [30, 25, 15], num_
     DataTra = wrap_gene_location(tdata_rs, location_data)
     t_loader= torch.utils.data.DataLoader(DataTra, batch_size=batch_size, num_workers = num_workers, shuffle = True, worker_init_fn=seed_worker, generator=g)
     # Create Deep Neural Network for Coordinate Regression
-    DNNmodel = DNN( in_channels = DataTra[1][0].shape[0], hidden_dims = hidden_dims) # [100,50,25] )
+    if len(hidden_dims) == 5:
+        DNNmodel = DNN5( in_channels = DataTra[1][0].shape[0], hidden_dims = hidden_dims) # [100,50,25] )
+    else:
+        DNNmodel = DNN( in_channels = DataTra[1][0].shape[0], hidden_dims = hidden_dims) # [100,50,25] )
     DNNmodel = DNNmodel.float()
     #
     CoOrg = TrainerExe()
@@ -110,10 +114,11 @@ def Fit_domain (data_train, domain_weights, domain_data = None, domainkey = "lay
     pickle.dump(DNNmodel, filehandler2)
 
 def Predict_cord (data_test, path = "", filename = "PreOrg_Mousesc", location_data = None):
+    testdata= (data_test.X.A if issparse(data_test.X) else data_test.X)
     if location_data is None:
         location_data = pd.DataFrame(np.ones((data_test.shape[0],2)), columns = ["psudo1", "psudo2"])
     ## Wrap up Validation data in to dataloader
-    vdatax = np.expand_dims(data_test.X, axis = 0)
+    vdatax = np.expand_dims(testdata, axis = 0)
     vdata_rs = np.swapaxes(vdatax, 1, 2)
     DataVal = wrap_gene_location(vdata_rs, location_data)
     Val_loader= torch.utils.data.DataLoader(DataVal, batch_size=1, num_workers = 4)

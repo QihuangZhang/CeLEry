@@ -1,4 +1,4 @@
-__version__ = '1.0.1'
+__version__ = '1.0.4'
 from . util import *
 from . datasetgenemap import *
 from . DNN import *

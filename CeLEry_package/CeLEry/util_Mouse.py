@@ -248,27 +248,45 @@ def report_prop_method (folder, name, dataSection2, traindata, Val_loader, outna
 	return losstotal
 
 
+def report_prop_method_region (folder, name, data_test, Val_loader, outname = ""):
+    """
+        Report the results of the proposed methods in comparison to the other method
+        :folder: string: specified the folder that keep the proposed DNN method
+        :name: string: specified the name of the DNN method, also will be used to name the output files
+        :data_test: AnnData: the data of query data
+        :Val_loader: Dataload: the validation data from dataloader
+        :outname: string: specified the name of the output, default is the same as the name
+    """
+    filename2 = "{folder}/{name}.obj".format(folder = folder, name = name)
+    filehandler = open(filename2, 'rb') 
+    DNNmodel = pickle.load(filehandler)
+    #
+    coords_predict = np.zeros((data_test.obs.shape[0],2))
+    #
+    for i, img in enumerate(Val_loader):
+        recon = DNNmodel(img)
+        coords_predict[i,:] = recon[0].detach().numpy()
+    np.savetxt("{folder}/{name}_predmatrix.csv".format(folder = folder, name = name), coords_predict, delimiter=",")
+    return coords_predict
 
-def report_region (folder, name, dataSection2, traindata, Val_loader, hist, outname = ""):
+
+def report_region (folder, name, data_test, Val_loader, hist = ""):
 	"""
 		Report the results of the proposed methods in comparison to the other method
 		:folder: string: specified the folder that keep the proposed DNN method
 		:name: string: specified the name of the DNN method, also will be used to name the output files
 		:dataSection2: AnnData: the data of Section 2
-		:traindata: AnnData: the data used in training data. This is only needed for compute SSIM
 		:Val_loader: Dataload: the validation data from dataloader
 		:outname: string: specified the name of the output, default is the same as the name
 		:ImageSec2: Numpy: the image data that are refering to
 	"""
-	if outname == "":
-		outname = name
 	filename2 = "{folder}/{name}.obj".format(folder = folder, name = name)
 	filehandler = open(filename2, 'rb') 
 	DNNmodel = pickle.load(filehandler)
 	#
 	total_loss_org = []
 	area_record = []
-	region_predict = np.zeros((dataSection2.obs.shape[0],5))
+	region_predict = np.zeros((data_test.obs.shape[0],5))
 	for i, img in enumerate(Val_loader):
 		recon = DNNmodel(img)
 		region_predict[i,0:2] = recon[0].detach().numpy()
@@ -281,8 +299,9 @@ def report_region (folder, name, dataSection2, traindata, Val_loader, hist, outn
 	losstotal_itemize = [x.item() for x in total_loss_org]
 	losstotal = np.mean(losstotal_itemize)
 	result_area = sc.AnnData(X= np.expand_dims(np.array(area_record),  axis = 1))
-	result_area.obs = dataSection2.obs
+	result_area.obs = data_test.obs
 	getGeneImg(result_area, emptypixel = -0.1)
 	plotGeneImg(result_area.GeneImg[0,:,:],filename = "{folder}/{name}_AREA".format(folder = folder, name = outname))
-	UncertaintyPlot(result_area,filename = "{folder}/{name}_AREA_overlay".format(folder = folder, name = outname), hist = hist)
-	return losstotal
+	if hist != "":
+		UncertaintyPlot(result_area,filename = "{folder}/{name}_AREA_overlay".format(folder = folder, name = outname), hist = hist)
+	return area_record

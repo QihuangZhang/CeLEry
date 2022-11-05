@@ -241,7 +241,7 @@ Each row of the output matrix represents a 2D coordinates of the predicted cells
 Qdata.obs
 ```
 
-```{=html}
+
 <div>
 <style scoped>
     .dataframe tbody tr th:only-of-type {
@@ -576,7 +576,7 @@ Qdata.obs
 </table>
 <p>3000 rows × 59 columns</p>
 </div>
-```
+
 
 ##### Confidence Score
 

@@ -243,19 +243,6 @@ Qdata.obs
 
 
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -602,21 +589,7 @@ Qdata.obs
 
 Output:
 
-```{=html}
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -937,7 +910,6 @@ Output:
 </table>
 <p>3000 rows × 59 columns</p>
 </div>
-```
 
 #### 4.2 Analysis Task 2: Layer Recovery
 
@@ -1080,21 +1052,7 @@ Query_select.obs
 
 Output:
 
-```{=html}
 <div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -1324,7 +1282,6 @@ Output:
 </table>
 <p>3000 rows × 14 columns</p>
 </div>
-```
 
 <!-- ### 5. Data Augmentation 
 

@@ -212,7 +212,7 @@ The prediction function `Predict_cord` contains three arguments:
 -   filename: the name of the model object to be saved
 
 The method implementation outputs the 2D coordinates in `pred_cord`. A
-`.csv` file will also saved with the name \"predmatrix\".
+`.csv` file will also saved with the name `predmatrix`. The prediction results is also saved in `Qdata.obs`.
 
 
 Example code:
@@ -235,7 +235,709 @@ array([[0.67726576, 0.49435037],
        [0.3674576 , 0.50103331]])
 ```
 
-Each row of the output matrix represents a 2D coordinates of the predicted cells.
+Each row of the output matrix represents a 2D coordinates of the predicted cells. The results is also appearing in the updaded `Qdata.obs`.
+
+``` {.python}
+Qdata.obs
+```
+
+```{=html}
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>exp_component_name</th>
+      <th>platform_label</th>
+      <th>cluster_color</th>
+      <th>cluster_order</th>
+      <th>cluster_label</th>
+      <th>class_color</th>
+      <th>class_order</th>
+      <th>class_label</th>
+      <th>subclass_color</th>
+      <th>subclass_order</th>
+      <th>...</th>
+      <th>injection_roi_label</th>
+      <th>injection_type_color</th>
+      <th>injection_type_id</th>
+      <th>injection_type_label</th>
+      <th>cortical_layer_label</th>
+      <th>outlier_call</th>
+      <th>outlier_type</th>
+      <th>n_counts</th>
+      <th>x_cord_pred</th>
+      <th>y_cord_pred</th>
+    </tr>
+    <tr>
+      <th>sample_name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>CAGCGACAGAGACTTA-L8TX_180115_01_F11</th>
+      <td>CAGCGACAGAGACTTA-17L8TX_180115_01_F11</td>
+      <td>10x</td>
+      <td>#07C6D9</td>
+      <td>196.0</td>
+      <td>196_L4/5 IT CTX</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#00E5E5</td>
+      <td>17.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>All</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>602.0</td>
+      <td>0.700048</td>
+      <td>0.534017</td>
+    </tr>
+    <tr>
+      <th>AGCTCTCCATCGACGC-L8TX_180115_01_F09</th>
+      <td>AGCTCTCCATCGACGC-23L8TX_180115_01_F09</td>
+      <td>10x</td>
+      <td>#00FFFF</td>
+      <td>188.0</td>
+      <td>188_L4/5 IT CTX</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#00E5E5</td>
+      <td>17.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>All</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>1597.0</td>
+      <td>0.427784</td>
+      <td>0.516523</td>
+    </tr>
+    <tr>
+      <th>AGAGCGACACCTCGTT-L8TX_180406_01_C08</th>
+      <td>AGAGCGACACCTCGTT-7L8TX_180406_01_C08</td>
+      <td>10x</td>
+      <td>#297F98</td>
+      <td>331.0</td>
+      <td>331_L6 CT ENTm</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#174596</td>
+      <td>34.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>869.0</td>
+      <td>0.071109</td>
+      <td>0.467619</td>
+    </tr>
+    <tr>
+      <th>TGGCGCAAGTACACCT-L8TX_180115_01_C11</th>
+      <td>TGGCGCAAGTACACCT-11L8TX_180115_01_C11</td>
+      <td>10x</td>
+      <td>#28758B</td>
+      <td>329.0</td>
+      <td>329_L6 CT CTX</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#2D8CB8</td>
+      <td>33.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>All</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>1876.0</td>
+      <td>0.900394</td>
+      <td>0.176353</td>
+    </tr>
+    <tr>
+      <th>ACCTTTAGTTATCACG-L8TX_180115_01_D11</th>
+      <td>ACCTTTAGTTATCACG-12L8TX_180115_01_D11</td>
+      <td>10x</td>
+      <td>#00FFFF</td>
+      <td>188.0</td>
+      <td>188_L4/5 IT CTX</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#00E5E5</td>
+      <td>17.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>All</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>2068.0</td>
+      <td>0.345863</td>
+      <td>0.418795</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>TTTGTCATCGTACCGG-L8TX_180221_01_B11</th>
+      <td>TTTGTCATCGTACCGG-1L8TX_180221_01_B11</td>
+      <td>10x</td>
+      <td>#B36C76</td>
+      <td>13.0</td>
+      <td>13_Lamp5</td>
+      <td>#F05A28</td>
+      <td>1.0</td>
+      <td>GABAergic</td>
+      <td>#DA808C</td>
+      <td>3.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>All</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>966.0</td>
+      <td>0.222131</td>
+      <td>0.285191</td>
+    </tr>
+    <tr>
+      <th>ACCTTTAGTGATGATA-L8TX_180221_01_D11</th>
+      <td>ACCTTTAGTGATGATA-3L8TX_180221_01_D11</td>
+      <td>10x</td>
+      <td>#30E6BA</td>
+      <td>131.0</td>
+      <td>131_L2 IT RSPv</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#2DB38A</td>
+      <td>10.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>All</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>833.0</td>
+      <td>0.248778</td>
+      <td>0.135483</td>
+    </tr>
+    <tr>
+      <th>AGCTCTCCATAGAAAC-L8TX_180115_01_D11</th>
+      <td>AGCTCTCCATAGAAAC-12L8TX_180115_01_D11</td>
+      <td>10x</td>
+      <td>#02F970</td>
+      <td>183.0</td>
+      <td>183_L2/3 IT CTX</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#0BE652</td>
+      <td>15.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>All</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>1423.0</td>
+      <td>0.726116</td>
+      <td>0.442133</td>
+    </tr>
+    <tr>
+      <th>AGAGCGACACAACGTT-L8TX_180406_01_H01</th>
+      <td>AGAGCGACACAACGTT-1L8TX_180406_01_H01</td>
+      <td>10x</td>
+      <td>#299337</td>
+      <td>141.0</td>
+      <td>141_L3 IT ENTm</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#65CA2F</td>
+      <td>12.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>911.0</td>
+      <td>0.632229</td>
+      <td>0.108702</td>
+    </tr>
+    <tr>
+      <th>AGCTCTCCATATACGC-L8TX_180406_01_B06</th>
+      <td>AGCTCTCCATATACGC-5L8TX_180406_01_B06</td>
+      <td>10x</td>
+      <td>#297F98</td>
+      <td>331.0</td>
+      <td>331_L6 CT ENTm</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#174596</td>
+      <td>34.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>708.0</td>
+      <td>0.330912</td>
+      <td>0.482509</td>
+    </tr>
+  </tbody>
+</table>
+<p>3000 rows × 59 columns</p>
+</div>
+```
+
+##### Confidence Score
+
+To quantify the uncertainty of the prediction, we can produce confidence score for each predicted subject. We first train the deep neural network using `cel.Fit_region`.
+
+The usage of `Fit_region` is similar to Fit_cord. An extra parmameter `alpha` is needed to indicate the confidence level.
+
+``` {.python}
+model_train = cel.Fit_region (data_train = Rdata, alpha = 0.95, hidden_dims = [30, 25, 15], num_epochs_max = 500, path = "output/example", filename = "ConfRegion_Mousesc")
+
+model_train
+```
+
+Then, we use `Predict_region` to evaluate the confidence score for each prediction subject. This function produce two new columns in the object of query data: area and conf_score.
+
+The `area` records the area of the predicted circle, which will cover the truth with probability `alpha`. The confidence score measures the uncertainty of the prediction, which is defined as `1 - area`. Higher confidence level represents a lower uncertainty in the prediction.
+
+``` {.python}
+pred_region = cel.Predict_region (data_test = Qdata, path = "output/example", filename = "ConfRegion_Mousesc")
+
+Qdata.obs
+```
+
+Output:
+
+```{=html}
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>exp_component_name</th>
+      <th>platform_label</th>
+      <th>cluster_color</th>
+      <th>cluster_order</th>
+      <th>cluster_label</th>
+      <th>class_color</th>
+      <th>class_order</th>
+      <th>class_label</th>
+      <th>subclass_color</th>
+      <th>subclass_order</th>
+      <th>...</th>
+      <th>injection_roi_label</th>
+      <th>injection_type_color</th>
+      <th>injection_type_id</th>
+      <th>injection_type_label</th>
+      <th>cortical_layer_label</th>
+      <th>outlier_call</th>
+      <th>outlier_type</th>
+      <th>n_counts</th>
+      <th>area_record</th>
+      <th>conf_score</th>
+    </tr>
+    <tr>
+      <th>sample_name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>CAGCGACAGAGACTTA-L8TX_180115_01_F11</th>
+      <td>CAGCGACAGAGACTTA-17L8TX_180115_01_F11</td>
+      <td>10x</td>
+      <td>#07C6D9</td>
+      <td>196.0</td>
+      <td>196_L4/5 IT CTX</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#00E5E5</td>
+      <td>17.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>All</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>602.0</td>
+      <td>0.521508</td>
+      <td>0.478492</td>
+    </tr>
+    <tr>
+      <th>AGCTCTCCATCGACGC-L8TX_180115_01_F09</th>
+      <td>AGCTCTCCATCGACGC-23L8TX_180115_01_F09</td>
+      <td>10x</td>
+      <td>#00FFFF</td>
+      <td>188.0</td>
+      <td>188_L4/5 IT CTX</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#00E5E5</td>
+      <td>17.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>All</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>1597.0</td>
+      <td>0.464650</td>
+      <td>0.535350</td>
+    </tr>
+    <tr>
+      <th>AGAGCGACACCTCGTT-L8TX_180406_01_C08</th>
+      <td>AGAGCGACACCTCGTT-7L8TX_180406_01_C08</td>
+      <td>10x</td>
+      <td>#297F98</td>
+      <td>331.0</td>
+      <td>331_L6 CT ENTm</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#174596</td>
+      <td>34.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>869.0</td>
+      <td>0.478806</td>
+      <td>0.521194</td>
+    </tr>
+    <tr>
+      <th>TGGCGCAAGTACACCT-L8TX_180115_01_C11</th>
+      <td>TGGCGCAAGTACACCT-11L8TX_180115_01_C11</td>
+      <td>10x</td>
+      <td>#28758B</td>
+      <td>329.0</td>
+      <td>329_L6 CT CTX</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#2D8CB8</td>
+      <td>33.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>All</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>1876.0</td>
+      <td>0.533365</td>
+      <td>0.466635</td>
+    </tr>
+    <tr>
+      <th>ACCTTTAGTTATCACG-L8TX_180115_01_D11</th>
+      <td>ACCTTTAGTTATCACG-12L8TX_180115_01_D11</td>
+      <td>10x</td>
+      <td>#00FFFF</td>
+      <td>188.0</td>
+      <td>188_L4/5 IT CTX</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#00E5E5</td>
+      <td>17.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>All</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>2068.0</td>
+      <td>0.419726</td>
+      <td>0.580274</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>TTTGTCATCGTACCGG-L8TX_180221_01_B11</th>
+      <td>TTTGTCATCGTACCGG-1L8TX_180221_01_B11</td>
+      <td>10x</td>
+      <td>#B36C76</td>
+      <td>13.0</td>
+      <td>13_Lamp5</td>
+      <td>#F05A28</td>
+      <td>1.0</td>
+      <td>GABAergic</td>
+      <td>#DA808C</td>
+      <td>3.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>All</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>966.0</td>
+      <td>0.599244</td>
+      <td>0.400756</td>
+    </tr>
+    <tr>
+      <th>ACCTTTAGTGATGATA-L8TX_180221_01_D11</th>
+      <td>ACCTTTAGTGATGATA-3L8TX_180221_01_D11</td>
+      <td>10x</td>
+      <td>#30E6BA</td>
+      <td>131.0</td>
+      <td>131_L2 IT RSPv</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#2DB38A</td>
+      <td>10.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>All</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>833.0</td>
+      <td>0.490772</td>
+      <td>0.509228</td>
+    </tr>
+    <tr>
+      <th>AGCTCTCCATAGAAAC-L8TX_180115_01_D11</th>
+      <td>AGCTCTCCATAGAAAC-12L8TX_180115_01_D11</td>
+      <td>10x</td>
+      <td>#02F970</td>
+      <td>183.0</td>
+      <td>183_L2/3 IT CTX</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#0BE652</td>
+      <td>15.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>All</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>1423.0</td>
+      <td>0.445069</td>
+      <td>0.554931</td>
+    </tr>
+    <tr>
+      <th>AGAGCGACACAACGTT-L8TX_180406_01_H01</th>
+      <td>AGAGCGACACAACGTT-1L8TX_180406_01_H01</td>
+      <td>10x</td>
+      <td>#299337</td>
+      <td>141.0</td>
+      <td>141_L3 IT ENTm</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#65CA2F</td>
+      <td>12.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>911.0</td>
+      <td>0.674069</td>
+      <td>0.325931</td>
+    </tr>
+    <tr>
+      <th>AGCTCTCCATATACGC-L8TX_180406_01_B06</th>
+      <td>AGCTCTCCATATACGC-5L8TX_180406_01_B06</td>
+      <td>10x</td>
+      <td>#297F98</td>
+      <td>331.0</td>
+      <td>331_L6 CT ENTm</td>
+      <td>#00ADEE</td>
+      <td>2.0</td>
+      <td>Glutamatergic</td>
+      <td>#174596</td>
+      <td>34.0</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>#FF7373</td>
+      <td>1</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>False</td>
+      <td>nan</td>
+      <td>708.0</td>
+      <td>0.442143</td>
+      <td>0.557857</td>
+    </tr>
+  </tbody>
+</table>
+<p>3000 rows × 59 columns</p>
+</div>
+```
 
 #### 4.2 Analysis Task 2: Layer Recovery
 
@@ -279,14 +981,12 @@ The sample size of the spots in each layer could be very different, leading to t
 ``` {.python}
 layer_count =  Reference_select.obs["Layer"].value_counts().sort_index()
 layer_weight = layer_count[7]/layer_count[0:7]
-layer_weights = torch.tensor(layer_weight.to_numpy())
-layer_weights
+layer_weight
 ```
 
 Output:
 ```
-tensor([1.8791, 2.0277, 0.5187, 2.3532, 0.7623, 0.7413, 1.0000],
-       dtype=torch.float64)
+[1.8791, 2.0277, 0.5187, 2.3532, 0.7623, 0.7413, 1.0000]
 ```
 
 
@@ -294,7 +994,7 @@ We train the model using the function `Fit_layer`. The model will
 returned and also save as an `.obj` object to be loaded later. This step can take an hour according to the structure of the neural network.
 
 ``` {.python}
-model_train = cel.Fit_layer (data_train = Reference_select, layer_weights = layer_weights, layerkey = "Layer", 
+model_train = cel.Fit_layer (data_train = Reference_select, layer_weights = layer_weight, layerkey = "Layer", 
                              hidden_dims = [30, 25, 15], num_epochs_max = 500, path = "output/tutorial", filename = "Org_layer")
 ```
 
@@ -331,6 +1031,299 @@ array([[ 2.27034092e-04,  1.87861919e-02,  3.39182794e-01, ...,
        [ 7.78675079e-04,  6.15803003e-02,  5.94597340e-01, ...,
          2.06700731e-02,  4.66533442e-04,  1.56409408e-06]])
 
+```
+
+#### 4.3 Analysis Task 3:  Domain Recovery
+
+In the third task, we use CeLEry to classify the cells into different domains without layer structures. i.e., we don't assume the domain having an ordinal relationship.
+
+```
+Qdata = sc.read("tutorial/data/AlzheimerToy.h5ad")
+Rdata = sc.read("tutorial/data/DataLayerToy.h5ad")
+
+cel.get_zscore(Qdata)
+cel.get_zscore(Rdata)
+
+common_gene = list(set(Qdata.var_names) & set(Rdata.var_names))
+#
+Query_select = Qdata[:,common_gene]
+Reference_select = Rdata[:,common_gene]
+```
+
+Note that the classes need to span from 0 to N-1. #!# Important
+
+```
+Reference_select.obs["domain_id"] = Rdata.obs["Layer"] -1
+domain_count =  Reference_select.obs["domain_id"].value_counts().sort_index()
+domain_weight = domain_count[len(domain_count)-1]/domain_count[0:len(domain_count)]
+
+domain_weights = torch.tensor(domain_weight.to_numpy(), dtype=torch.float32)
+domain_weights
+```
+
+We train the model using the function ``Fit_domain``. The fitted model will be returned and also save as an ``.obj`` object to be loaded later. 
+
+```
+model_train = cel.Fit_domain (data_train = Reference_select, domain_weights = domain_weight, domainkey = "domain_id", 
+                             hidden_dims = [30, 25, 15], num_epochs_max = 500, path = "output/example", filename = "PreOrg_domain")
+
+model_train
+```
+
+To predict the results, we implement `Predict_domain` function. A probabilitic classificatoin matrix will be returned and the deterministic domain prediction will be attached to `.obs`.
+
+```
+pred_domain = cel.Predict_domain (data_test = Query_select, class_num = 7,   path = "output/example", filename = "PreOrg_domain")
+
+Query_select.obs
+```
+
+Output:
+
+```{=html}
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>cellname</th>
+      <th>sample</th>
+      <th>groupid</th>
+      <th>final_celltype</th>
+      <th>maxprob</th>
+      <th>imaxprob</th>
+      <th>trem2</th>
+      <th>atscore</th>
+      <th>apoe</th>
+      <th>sampleID</th>
+      <th>n_counts</th>
+      <th>pred_domain</th>
+      <th>pred_domain_str</th>
+      <th>domain_cel_pred</th>
+    </tr>
+    <tr>
+      <th>index</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>GGGAATGGTTATTCTC-1-C2</th>
+      <td>GGGAATGGTTATTCTC-1</td>
+      <td>C2</td>
+      <td>C</td>
+      <td>Oli</td>
+      <td>0.827</td>
+      <td>827</td>
+      <td>WT</td>
+      <td>A-T-</td>
+      <td>E3/E3</td>
+      <td>1</td>
+      <td>1277.0</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>ATCATGGCAGTGAGTG-1-C3</th>
+      <td>ATCATGGCAGTGAGTG-1</td>
+      <td>C3</td>
+      <td>C</td>
+      <td>Ast</td>
+      <td>0.822</td>
+      <td>822</td>
+      <td>WT</td>
+      <td>A-T-</td>
+      <td>E3/E3</td>
+      <td>2</td>
+      <td>1961.0</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>CGACCTTAGTGTCCCG-1-I4</th>
+      <td>CGACCTTAGTGTCCCG-1</td>
+      <td>I4</td>
+      <td>I</td>
+      <td>Oli</td>
+      <td>0.827</td>
+      <td>827</td>
+      <td>WT</td>
+      <td>A+T-</td>
+      <td>E3/E3</td>
+      <td>3</td>
+      <td>706.0</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>ATCACGAGTTGGAGGT-1-I1</th>
+      <td>ATCACGAGTTGGAGGT-1</td>
+      <td>I1</td>
+      <td>I</td>
+      <td>Ex</td>
+      <td>0.779</td>
+      <td>779</td>
+      <td>WT</td>
+      <td>A+T-</td>
+      <td>E3/E4</td>
+      <td>6</td>
+      <td>2541.0</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>CGACCTTCACAGATTC-1-I4</th>
+      <td>CGACCTTCACAGATTC-1</td>
+      <td>I4</td>
+      <td>I</td>
+      <td>In</td>
+      <td>0.775</td>
+      <td>775</td>
+      <td>WT</td>
+      <td>A+T-</td>
+      <td>E3/E3</td>
+      <td>3</td>
+      <td>4185.0</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>GGAATAACATACGCTA-1-T3</th>
+      <td>GGAATAACATACGCTA-1</td>
+      <td>T3</td>
+      <td>T</td>
+      <td>Ast</td>
+      <td>0.811</td>
+      <td>811</td>
+      <td>R47H</td>
+      <td>A+T+</td>
+      <td>E3/E3</td>
+      <td>9</td>
+      <td>583.0</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>TTTCCTCGTCGGGTCT-1-I2</th>
+      <td>TTTCCTCGTCGGGTCT-1</td>
+      <td>I2</td>
+      <td>I</td>
+      <td>Ex</td>
+      <td>0.545</td>
+      <td>545</td>
+      <td>WT</td>
+      <td>A+T-</td>
+      <td>E3/E4</td>
+      <td>5</td>
+      <td>4217.0</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>TCTGAGAAGAATAGGG-T1COMB</th>
+      <td>TCTGAGAAGAATAGGG</td>
+      <td>T1</td>
+      <td>T</td>
+      <td>Ast</td>
+      <td>0.821</td>
+      <td>821</td>
+      <td>R47H</td>
+      <td>A+T+</td>
+      <td>E4/E4</td>
+      <td>15</td>
+      <td>1455.0</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>TTTCCTCTCGTCCAGG-1-I2</th>
+      <td>TTTCCTCTCGTCCAGG-1</td>
+      <td>I2</td>
+      <td>I</td>
+      <td>End</td>
+      <td>0.721</td>
+      <td>721</td>
+      <td>WT</td>
+      <td>A+T-</td>
+      <td>E3/E4</td>
+      <td>5</td>
+      <td>1166.0</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6.0</td>
+    </tr>
+    <tr>
+      <th>GCAGCCATCTGGCGTG-1-T2</th>
+      <td>GCAGCCATCTGGCGTG-1</td>
+      <td>T2</td>
+      <td>T</td>
+      <td>Ex</td>
+      <td>0.355</td>
+      <td>355</td>
+      <td>R47H</td>
+      <td>A+T+</td>
+      <td>E3/E4</td>
+      <td>11</td>
+      <td>2434.0</td>
+      <td>6</td>
+      <td>6</td>
+      <td>6.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>3000 rows × 14 columns</p>
+</div>
 ```
 
 <!-- ### 5. Data Augmentation 

@@ -300,8 +300,10 @@ def report_region (folder, name, data_test, Val_loader, hist = ""):
 	losstotal = np.mean(losstotal_itemize)
 	result_area = sc.AnnData(X= np.expand_dims(np.array(area_record),  axis = 1))
 	result_area.obs = data_test.obs
-	getGeneImg(result_area, emptypixel = -0.1)
-	plotGeneImg(result_area.GeneImg[0,:,:],filename = "{folder}/{name}_AREA".format(folder = folder, name = outname))
+	if set(['x_cord', 'y_cord']).issubset(list(data_test.obs.columns.values)):
+		getGeneImg(result_area, emptypixel = -0.1)
+		plotGeneImg(result_area.GeneImg[0,:,:],filename = "{folder}/{name}_AREA".format(folder = folder, name = outname))
 	if hist != "":
 		UncertaintyPlot(result_area,filename = "{folder}/{name}_AREA_overlay".format(folder = folder, name = outname), hist = hist)
+	
 	return area_record

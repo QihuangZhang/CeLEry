@@ -63,7 +63,7 @@ def Fit_cord (data_train, location_data = None, hidden_dims = [30, 25, 15], num_
     return DNNmodel
 
 
-def Fit_region (data_train, location_data = None, hidden_dims = [30, 25, 15], num_epochs_max = 500, path = "", filename = "PreOrg_Mousesc", batch_size = 4, num_workers = 1, number_error_try = 15, initial_learning_rate = 0.0001, seednum = 2021):
+def Fit_region (data_train, alpha = 0.95, location_data = None, hidden_dims = [30, 25, 15], num_epochs_max = 500, path = "", filename = "PreOrg_Mousesc", batch_size = 4, num_workers = 1, number_error_try = 15, initial_learning_rate = 0.0001, seednum = 2021):
     #
     random.seed(seednum)
     torch.manual_seed(seednum)
@@ -80,7 +80,7 @@ def Fit_region (data_train, location_data = None, hidden_dims = [30, 25, 15], nu
     DataTra = wrap_gene_location(tdata_rs, location_data)
     t_loader= torch.utils.data.DataLoader(DataTra, batch_size=batch_size, num_workers = num_workers, shuffle = True, worker_init_fn=seed_worker, generator=g)
     # Create Deep Neural Network for Coordinate Regression
-    DNNmodel = DNNregion( in_channels = DataTra[1][0].shape[0], hidden_dims = hidden_dims) # [100,50,25] )
+    DNNmodel = DNNregion( in_channels = DataTra[1][0].shape[0], alpha = alpha,  hidden_dims = hidden_dims) # [100,50,25] )
     DNNmodel = DNNmodel.float()
     #
     CoOrg = TrainerExe()
@@ -106,6 +106,7 @@ def Fit_layer (data_train, layer_weights, layer_data = None, layerkey = "layer",
     if layer_data is None:
         layer_data = data_train.obs
     #
+    layer_weights = torch.tensor(layer_weights.to_numpy())
     traindata = (data_train.X.A if issparse(data_train.X) else data_train.X)
     tdatax = np.expand_dims(traindata, axis = 0)
     tdata_rs = np.swapaxes(tdatax, 1, 2)
@@ -133,6 +134,7 @@ def Fit_domain (data_train, domain_weights, domain_data = None, domainkey = "lay
     if domain_data is None:
         domain_data = data_train.obs
     #
+    domain_weights = torch.tensor(domain_weights.to_numpy(), dtype=torch.float32)
     traindata = (data_train.X.A if issparse(data_train.X) else data_train.X)
     tdatax = np.expand_dims(traindata, axis = 0)
     tdata_rs = np.swapaxes(tdatax, 1, 2)
@@ -162,6 +164,8 @@ def Predict_cord (data_test, path = "", filename = "PreOrg_Mousesc", location_da
     cord = report_prop_method_sc(folder = path,
                         name = filename, data_test = data_test,
                         Val_loader = Val_loader)
+    data_test.obs["x_cord_pred"] = cord[:,0]
+    data_test.obs["y_cord_pred"] = cord[:,1]
     return cord
 
 
@@ -200,7 +204,10 @@ def Predict_region (data_test, path = "", filename = "PreOrg_ConfScore", locatio
     area_record = report_region(folder = path,
                         name = filename, data_test = data_test,
                         Val_loader = Val_loader, hist = hist)
-    return [1-i for i in area_record]
+    conf_score = [1-i for i in area_record]
+    data_test.obs["area_record"] = np.array(area_record)
+    data_test.obs["conf_score"] = np.array(conf_score)
+    return conf_score
 
 
 def Predict_domain (data_test, class_num,  path = "", filename = "PreOrg_domainsc", truth_label = None, predtype = "probabilistic"):
@@ -219,6 +226,7 @@ def Predict_domain (data_test, class_num,  path = "", filename = "PreOrg_domains
                        data_test = data_test,
                        Val_loader = Val_loader,
                        class_num = class_num)
+    data_test.obs["domain_cel_pred"] = domain[1]
     if predtype == "probabilistic":
         return domain[0]
     elif predtype == "deterministic":
@@ -311,6 +319,7 @@ def Predict_layer (data_test, class_num,  path = "", filename = "PreOrg_layernsc
                        data_test = data_test,
                        Val_loader = Val_loader,
                        class_num = class_num)
+    data_test.obs["layer_cel_pred"] = domain[1]
     if predtype == "probabilistic":
         return domain[0]
     elif predtype == "deterministic":

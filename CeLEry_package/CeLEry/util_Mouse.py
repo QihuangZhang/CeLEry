@@ -140,7 +140,7 @@ def Pred_Density (coords, referadata, referlocation):
 	return(img_predict)
 	
 
-def RelocationPlot (coords, referlocation, filename = None):
+def RelocationPlot (coords, referlocation, filename = None, linewidth = 0.8):
 	"""
 		Report the prediction distribution regarding the number of prediction fall in each spot/pixel
 		:coords: numpy [Length_Locations x 2]: the predicted coordinates. Each cell in [0,1]
@@ -162,7 +162,7 @@ def RelocationPlot (coords, referlocation, filename = None):
 		y_pixel_pred = floor(coords[inp,1]*ylen)
 		xvalues = [referx[inp]- referxmin,x_pixel_pred]
 		yvalues = [refery[inp]- referymin,y_pixel_pred]
-		plt.plot(yvalues, xvalues, color = "#555b6e", alpha = 0.5, lw = 0.8)
+		plt.plot(yvalues, xvalues, color = "#555b6e", alpha = 0.5, lw = linewidth)
 	#
 	plt.scatter(refery - referymin, referx - referxmin,  marker='^', color= "#bee3db") # 
 	plt.scatter(coords[:,1]*ylen, coords[:,0]*xlen, marker='o', color= "#ffd6ba") #, color= "ffd6ba"

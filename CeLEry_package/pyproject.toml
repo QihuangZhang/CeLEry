@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "CeLEryPy"
-version = "1.1.0"
+version = "1.1.1"
 description = "Leverage spatial transcriptomics data to recover cell locations in single-cell RNA RNA-seq"
 readme = "README.md"
 authors = [{ name = "Qihuang Zhang", email = "qihuang.zh@gmail.com"}]

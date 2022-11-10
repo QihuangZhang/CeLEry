@@ -302,8 +302,8 @@ def report_region (folder, name, data_test, Val_loader, hist = ""):
 	result_area.obs = data_test.obs
 	if set(['x_cord', 'y_cord']).issubset(list(data_test.obs.columns.values)):
 		getGeneImg(result_area, emptypixel = -0.1)
-		plotGeneImg(result_area.GeneImg[0,:,:],filename = "{folder}/{name}_AREA".format(folder = folder, name = outname))
+		plotGeneImg(result_area.GeneImg[0,:,:],filename = "{folder}/{name}_AREA".format(folder = folder, name = name))
 	if hist != "":
-		UncertaintyPlot(result_area,filename = "{folder}/{name}_AREA_overlay".format(folder = folder, name = outname), hist = hist)
+		UncertaintyPlot(result_area,filename = "{folder}/{name}_AREA_overlay".format(folder = folder, name = name), hist = hist)
 	
 	return area_record

@@ -291,7 +291,7 @@ def report_region (folder, name, data_test, Val_loader, hist = ""):
 		recon = DNNmodel(img)
 		region_predict[i,0:2] = recon[0].detach().numpy()
 		region_predict[i,2:4] = recon[1].detach().numpy()
-		region_predict[i,4] = recon[2].detach().numpy()
+		# region_predict[i,4] = recon[2].detach().numpy()
 		loss = DNNmodel.loss_function(*recon)
 		total_loss_org.append(loss.get("Inside_indic").data)
 		area_record.append(loss.get("Area").item())

@@ -306,4 +306,4 @@ def report_region (folder, name, data_test, Val_loader, hist = ""):
 	if hist != "":
 		UncertaintyPlot(result_area,filename = "{folder}/{name}_AREA_overlay".format(folder = folder, name = name), hist = hist)
 	
-	return area_record
+	return [losstotal, area_record]

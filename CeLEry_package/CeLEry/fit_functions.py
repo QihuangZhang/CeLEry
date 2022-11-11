@@ -201,13 +201,13 @@ def Predict_region (data_test, path = "", filename = "PreOrg_ConfScore", locatio
     DataVal = wrap_gene_location(vdata_rs, location_data)
     Val_loader= torch.utils.data.DataLoader(DataVal, batch_size=1, num_workers = 1)
     #
-    area_record = report_region(folder = path,
+    [losstotal, area_record] = report_region(folder = path,
                         name = filename, data_test = data_test,
                         Val_loader = Val_loader, hist = hist)
     conf_score = [1-i for i in area_record]
     data_test.obs["area_record"] = np.array(area_record)
     data_test.obs["conf_score"] = np.array(conf_score)
-    return conf_score
+    return losstotal
 
 
 def Predict_domain (data_test, class_num,  path = "", filename = "PreOrg_domainsc", truth_label = None, predtype = "probabilistic"):

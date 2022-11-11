@@ -21,12 +21,12 @@ def seed_worker(worker_id):
     np.random.seed(worker_seed)
     random.seed(worker_seed)
 
-def DataAugmentation (RefDataOrigin, path = "../output/Biogene", filename = "SpatialTranscript", clusterready = False, n_clusters=100,  beta = 1e-5, nrep = 2, generateplot = True):
+def DataAugmentation (RefDataOrigin, obs_location = ['x_cord','y_cord'], path = "output/Project", filename = "SpatialTranscript", clusterready = False, n_clusters=100,  beta = 1e-5, nrep = 2, generateplot = True):
     #Prepare
-    RefDataOriginsort = RefDataOrigin.obs.sort_values (by = ['x_cord','y_cord'])
+    RefDataOriginsort = RefDataOrigin.obs.sort_values (by = obs_location)
     RefDataOrigin = RefDataOrigin[RefDataOriginsort.index]
     cdata = RefDataOrigin.copy()
-    getGeneImg(cdata, emptypixel = 0)
+    getGeneImg(cdata, emptypixel = 0, obsset = obs_location)
     cdataexpand =  np.expand_dims(cdata.GeneImg, axis=1) 
     #Clustering
     try:
@@ -47,45 +47,45 @@ def DataAugmentation (RefDataOrigin, path = "../output/Biogene", filename = "Spa
     # 
     full_RefData = datagenemapclust(cdataexpand, kmeansresults)
     CVAEmodel, clg = FitGenModel(path = path, filename = filename, traindata = full_RefData, cdataexpand = cdataexpand, Kmeans_cluster = kmeansresults, beta = beta)
-    CVAEmodel, clg = FitGenModel_continue(path = path, filename = filename, model = CVAEmodel, clg = clg, traindata = full_RefData, cdataexpand = cdataexpand, beta = beta)
+    CVAEmodel, clg = FitGenModel_continue(path = path, filename = filename, model = CVAEmodel, clg = clg, traindata = full_RefData, beta = beta)
     if generateplot:
         print("Now generating the plots for the augmented data...")
         GeneratePlot(path, filename, beta = beta, traindata = full_RefData)
-    Data_Generation(path, filename, beta= beta, dataSection1 = RefDataOrigin, traindata = full_RefData, nrep = nrep)
+    Data_Generation(path, filename, obs_location = obs_location, beta= beta, dataSection1 = RefDataOrigin, traindata = full_RefData, nrep = nrep)
 
 
-def FitGenModel (path, filename, traindata, cdataexpand, Kmeans_cluster, beta, learning_rate = 1e-3):
+def FitGenModel (path, filename, traindata, cdataexpand, Kmeans_cluster, beta, hidden = [8,4,2,4,4], learning_rate = 1e-3):
     random.seed(2021)
     torch.manual_seed(2021)
     np.random.seed(2021)
     #
-    trainloader= torch.utils.data.DataLoader(traindata, batch_size=1, num_workers = 4, shuffle = True, worker_init_fn=seed_worker)
+    trainloader= torch.utils.data.DataLoader(traindata, batch_size=1, num_workers = 1, shuffle = True, worker_init_fn=seed_worker)
     ## Set up Autoencoder
-    CVAEmodel = ClusterVAEmask(latent_dim = 511-Kmeans_cluster.max(), total_cluster = Kmeans_cluster.max(), fgx = cdataexpand.shape[2], fgy = cdataexpand.shape[3], KLDw = 0, hidden = [8,4,2,4,4])
+    CVAEmodel = ClusterVAEmask(latent_dim = 511-Kmeans_cluster.max(), total_cluster = Kmeans_cluster.max(), fgx = cdataexpand.shape[2], fgy = cdataexpand.shape[3], KLDw = 0, hidden = hidden)
     CVAEmodel = CVAEmodel.float()
-    filename = "{path}/DataAugmentation/{filename}_CVAE_{beta}.obj".format(path = path, filename = filename, beta = beta)
+    file = "{path}/DataAugmentation/{filename}_CVAE_{beta}.obj".format(path = path, filename = filename, beta = beta)
     #
     ## Run Autoencoder 
     clg = TrainerExe()
-    clg.train(model = CVAEmodel, train_loader = trainloader, num_epochs= 249, annealing = True, KLDwinc = beta/4, n_incr =50, RCcountMax = 30, learning_rate = 0.001)
+    clg.train(model = CVAEmodel, train_loader = trainloader, num_epochs= 249, annealing = True, KLDwinc = beta/4, n_incr =50, RCcountMax = 30, learning_rate = learning_rate)
     # Save the model to a local folder
-    filehandler = open(filename, 'wb') 
+    filehandler = open(file, 'wb') 
     pickle.dump(CVAEmodel, filehandler)
-    print('save model to: {filename}'.format(filename = filename))
-    CVAEmodel.filename = filename
+    print('save model to: {filename}'.format(filename = file))
+    CVAEmodel.filename = file
     return CVAEmodel, clg
 
 ## if still converging
-def FitGenModel_continue (path, filename, model, clg, traindata, cdataexpand, beta):
-    trainloader= torch.utils.data.DataLoader(traindata, batch_size=1, num_workers = 4, shuffle = True, worker_init_fn=seed_worker)
+def FitGenModel_continue (path, filename, model, clg, traindata, beta):
+    trainloader= torch.utils.data.DataLoader(traindata, batch_size=1, num_workers = 1, shuffle = True, worker_init_fn=seed_worker)
     #
-    filename = "{path}/DataAugmentation/{filename}_CVAE_{beta}.obj".format(path = path, filename = filename, beta = beta)
+    file = "{path}/DataAugmentation/{filename}_CVAE_{beta}.obj".format(path = path, filename = filename, beta = beta)
     clg.train(model = model, train_loader = trainloader, num_epochs= 200, annealing = False, RCcountMax = 5, learning_rate = clg.learning_rate)
     # Save the model to a local folder
-    filehandler = open(filename, 'wb') 
+    filehandler = open(file, 'wb') 
     pickle.dump(model, filehandler)
-    print('save model to: {filename}'.format(filename=filename))
-    model.filename = filename
+    print('save model to: {filename}'.format(filename=file))
+    model.filename = file
     return model, clg
 
 def GeneratePlot(path, filename, beta, traindata):
@@ -112,7 +112,7 @@ def GeneratePlot(path, filename, beta, traindata):
             plotGeneImg( outputimg , filename = "{path}/DataAugmentation/{filename}_Generation/Glimps/Gen{beta}/img{j}var{i}".format(path = path, filename = filename, beta = beta, j = j, i = i), range = (omin.item(), omax.item()))
 
 
-def Data_Generation(path, filename, beta, dataSection1, traindata, nrep):
+def Data_Generation(path, filename, beta, dataSection1, traindata, nrep, obs_location = ['x_cord','y_cord']):
     trainloader= torch.utils.data.DataLoader(traindata, batch_size=1, num_workers = 4)
     random.seed(2021)
     torch.manual_seed(2021)
@@ -126,7 +126,7 @@ def Data_Generation(path, filename, beta, dataSection1, traindata, nrep):
     clg.model = CVAEmodel
     data_gen=clg.fast_generation(trainloader, nrep)
     # data_gen=np.load("../output/{folder}/data_gen.npy".format(folder = folder))
-    data_gen_rs = clg.deep_reshape (data = data_gen, refer = dataSection1.obs[["x_cord","y_cord"]])
+    data_gen_rs = clg.deep_reshape (data = data_gen, refer = dataSection1.obs[obs_location])
     try:
         os.makedirs("{path}/DataAugmentation/DataGen".format(path = path))
     except FileExistsError:

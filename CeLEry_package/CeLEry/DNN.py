@@ -302,7 +302,7 @@ class DNNregion(DNN):
 
 		self.fclayer1 = nn.Sequential( 
 			nn.Linear(in_channels, hidden_dims[0]),
-			nn.Dropout(0.25),
+			# nn.Dropout(0.25),
 			nn.ReLU())
 		self.fclayer2 = nn.Sequential( 
 			nn.Linear(hidden_dims[0], hidden_dims[1]),
@@ -311,7 +311,7 @@ class DNNregion(DNN):
 			nn.Linear(hidden_dims[1], hidden_dims[2]),
 			nn.ReLU())
 		self.fclayer4 = nn.Sequential(
-			nn.Linear(hidden_dims[2], 5))
+			nn.Linear(hidden_dims[2], 4)) # final layer 5 if transformed ellipse
 		
 		self.alpha = alpha
 			
@@ -333,7 +333,8 @@ class DNNregion(DNN):
 		
 		cord = F.sigmoid( z[:,0:2] )
 		r = F.softplus( z[:,2:4] )
-		theta = F.sigmoid( z[:,4] ) * math.pi
+		# theta = F.sigmoid( z[:,4] ) * math.pi
+		theta = 0
 		return  [cord, r, theta, input]
 
 	def loss_function(self,
@@ -363,16 +364,16 @@ class DNNregion(DNN):
 		theta_pred = args[2]
 		input = args[3]
 		
-		roration_x = torch.cat((torch.cos(theta_pred).unsqueeze(1), torch.sin(theta_pred).unsqueeze(1)), 1)
-		roration_y = torch.cat((torch.sin(theta_pred).unsqueeze(1), -torch.cos(theta_pred).unsqueeze(1)), 1)
+			
+		MSE_Adjust = (cord_pred - input[1]) / (r_pred + 1e-7)   #: old version - without considering rotation
 
-		
-		# MSE_Adjust = (cord_pred - input[1]) / (r_pred + 1e-7): old version - without considering rotation
-		cord_decenter = cord_pred - input[1]
-		semi_x = torch.sum(cord_decenter * roration_x , dim = 1)
-		semi_y = torch.sum(cord_decenter * roration_y , dim = 1)
-		cord_trans = torch.cat( (semi_x.unsqueeze(1), semi_y.unsqueeze(1)), 1)
-		MSE_Adjust = cord_trans / (r_pred + 1e-7)
+		# roration_x = torch.cat((torch.cos(theta_pred).unsqueeze(1), torch.sin(theta_pred).unsqueeze(1)), 1)
+		# roration_y = torch.cat((torch.sin(theta_pred).unsqueeze(1), -torch.cos(theta_pred).unsqueeze(1)), 1)
+		# cord_decenter = cord_pred - input[1]
+		# semi_x = torch.sum(cord_decenter * roration_x , dim = 1)
+		# semi_y = torch.sum(cord_decenter * roration_y , dim = 1)
+		# cord_trans = torch.cat( (semi_x.unsqueeze(1), semi_y.unsqueeze(1)), 1)
+		# MSE_Adjust = cord_trans / (r_pred + 1e-7)
 		
 		area = torch.prod(r_pred)
 		

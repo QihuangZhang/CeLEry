@@ -286,7 +286,7 @@ def report_region (folder, name, data_test, Val_loader, hist = ""):
 	#
 	total_loss_org = []
 	area_record = []
-	region_predict = np.zeros((data_test.obs.shape[0],5))
+	region_predict = np.zeros((data_test.obs.shape[0],4))
 	for i, img in enumerate(Val_loader):
 		recon = DNNmodel(img)
 		region_predict[i,0:2] = recon[0].detach().numpy()

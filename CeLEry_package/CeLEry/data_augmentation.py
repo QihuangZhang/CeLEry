@@ -47,7 +47,7 @@ def DataAugmentation (RefDataOrigin, obs_location = ['x_cord','y_cord'], path = 
     # 
     full_RefData = datagenemapclust(cdataexpand, kmeansresults)
     CVAEmodel, clg = FitGenModel(path = path, filename = filename, traindata = full_RefData, cdataexpand = cdataexpand, Kmeans_cluster = kmeansresults, beta = beta)
-    CVAEmodel, clg = FitGenModel_continue(path = path, filename = filename, model = CVAEmodel, clg = clg, traindata = full_RefData, beta = beta)
+    CVAEmodel, clg = FitGenModel_continue(path = path, filename = filename, model = CVAEmodel, clg = clg, traindata = full_RefData, cdataexpand = cdataexpand, beta = beta)
     if generateplot:
         print("Now generating the plots for the augmented data...")
         GeneratePlot(path, filename, beta = beta, traindata = full_RefData)
@@ -90,7 +90,7 @@ def FitGenModel_continue (path, filename, model, clg, traindata, beta):
 
 def GeneratePlot(path, filename, beta, traindata):
     trainloader= torch.utils.data.DataLoader(traindata, batch_size=1, num_workers = 4)
-    filename = "{path}/DataAugmentation/{filename}_CVAE_{beta}.obj".format(path = path, filename = filename, beta = beta)
+    file = "{path}/DataAugmentation/{filename}_CVAE_{beta}.obj".format(path = path, filename = filename, beta = beta)
     # 
     filehandler = open(filename, 'rb') 
     CVAEmodel = pickle.load(filehandler)
@@ -98,18 +98,19 @@ def GeneratePlot(path, filename, beta, traindata):
     clg=TrainerExe()
     clg.model = CVAEmodel
     try:
-        os.makedirs("{path}/DataAugmentation/{filename}_Generation/Glimps/Gen{beta}".format(path = path, filename = filename, beta = beta))
+        os.makedirs("{path}/DataAugmentation/{file}_Generation/Glimps/Gen{beta}".format(path = path, file = file, beta = beta))
     except FileExistsError:
-        print("Folder {path}/DataAugmentation/{filename}_Generation/Glimps/Gen{beta} already exists".format(path = path, filename = filename, beta = beta))
+        print("Folder {path}/DataAugmentation/{file}_Generation/Glimps/Gen{beta} already exists".format(path = path, file = file, beta = beta))
     for j, img in enumerate(trainloader):
         # img = next(dataloader_iterator)
-        plotGeneImg(img[0][0,0,:,:], filename = "{path}/DataAugmentation/{filename}_Generation/Glimps/Gen{beta}/img{j}".format(path = path, filename = filename, beta = beta, j = j))
+        plotGeneImg(img[0][0,0,:,:], filename = "{path}/DataAugmentation/{file}_Generation/Glimps/Gen{beta}/img{j}".format(path = path, file = file, beta = beta, j = j))
         omin = img[0].min()
         omax = img[0].max()
         for i in range(10):
+            CVAEmodel.seed = i
             result = CVAEmodel(img) 
             outputimg = result[0][0,0,:,:].detach().numpy() * result[4][0,0,:,:].detach().numpy()
-            plotGeneImg( outputimg , filename = "{path}/DataAugmentation/{filename}_Generation/Glimps/Gen{beta}/img{j}var{i}".format(path = path, filename = filename, beta = beta, j = j, i = i), range = (omin.item(), omax.item()))
+            plotGeneImg( outputimg , filename = "{path}/DataAugmentation/{file}_Generation/Glimps/Gen{beta}/img{j}var{i}".format(path = path, file = file, beta = beta, j = j, i = i), range = (omin.item(), omax.item()))
 
 
 def Data_Generation(path, filename, beta, dataSection1, traindata, nrep, obs_location = ['x_cord','y_cord']):

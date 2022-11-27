@@ -60,7 +60,7 @@ def get_SSIM (coords, referadata, referlocation, trainAnn, genelist):
 					img_predict[i,x_pixel_pred, y_pixel_pred,1] = img_predict[i,x_pixel_pred, y_pixel_pred,1] + 1
 		img_truth_i = centralize2(img_truth[i,:,:])
 		img_predict_i = centralize2(img_predict[i,:,:,0])
-		ssim_i = ssim(img_truth_i, img_predict_i, data_range= 1)
+		ssim_i = ssim(img_truth_i, img_predict_i)
 		SSIM_list.append(ssim_i)
 		corr_i = scipy.stats.pearsonr(img_truth_i.flatten(), img_predict_i.flatten())
 		cor_list.append(corr_i[0])

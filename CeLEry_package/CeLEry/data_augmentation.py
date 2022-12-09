@@ -47,14 +47,14 @@ def DataAugmentation (RefDataOrigin, obs_location = ['x_cord','y_cord'], path = 
     # 
     full_RefData = datagenemapclust(cdataexpand, kmeansresults)
     CVAEmodel, clg = FitGenModel(path = path, filename = filename, traindata = full_RefData, cdataexpand = cdataexpand, Kmeans_cluster = kmeansresults, beta = beta)
-    CVAEmodel, clg = FitGenModel_continue(path = path, filename = filename, model = CVAEmodel, clg = clg, traindata = full_RefData, cdataexpand = cdataexpand, beta = beta)
+    CVAEmodel, clg = FitGenModel_continue(path = path, filename = filename, model = CVAEmodel, clg = clg, traindata = full_RefData, beta = beta)
     if generateplot:
         print("Now generating the plots for the augmented data...")
         GeneratePlot(path, filename, beta = beta, traindata = full_RefData)
     Data_Generation(path, filename, obs_location = obs_location, beta= beta, dataSection1 = RefDataOrigin, traindata = full_RefData, nrep = nrep)
 
 
-def FitGenModel (path, filename, traindata, cdataexpand, Kmeans_cluster, beta, hidden = [8,4,2,4,4], learning_rate = 1e-3):
+def FitGenModel (path, filename, traindata, cdataexpand, Kmeans_cluster, beta, hidden = [8,4,2,4,4], learning_rate = 1e-3,  number_error_try = 30):
     random.seed(2021)
     torch.manual_seed(2021)
     np.random.seed(2021)
@@ -67,7 +67,7 @@ def FitGenModel (path, filename, traindata, cdataexpand, Kmeans_cluster, beta, h
     #
     ## Run Autoencoder 
     clg = TrainerExe()
-    clg.train(model = CVAEmodel, train_loader = trainloader, num_epochs= 249, annealing = True, KLDwinc = beta/4, n_incr =50, RCcountMax = 30, learning_rate = learning_rate)
+    clg.train(model = CVAEmodel, train_loader = trainloader, num_epochs= 249, annealing = True, KLDwinc = beta/4, n_incr =50, RCcountMax = number_error_try, learning_rate = learning_rate)
     # Save the model to a local folder
     filehandler = open(file, 'wb') 
     pickle.dump(CVAEmodel, filehandler)

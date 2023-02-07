@@ -1,4 +1,4 @@
-# Guide for 1_LIBD
+# Guide for LIBD study
 ## Pipeline
 
 preprocess.py  ->  

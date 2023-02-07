@@ -1,3 +1,6 @@
+#!-### Note: Need to run "preprocess.py" first to obtain the available datasets.
+
+
 ## In this version of Cell Location discovEry (LIBD) we consider region of a tissue under Scenarios 3 and 4
 
 # Application to LIBD data

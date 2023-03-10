@@ -88,7 +88,7 @@ def FitGenModel_continue (path, filename, model, clg, traindata, beta):
     model.filename = file
     return model, clg
 
-def GeneratePlot(path, filename, beta, traindata):
+def GeneratePlot(path, filename, beta, traindata, sigma = 0):
     trainloader= torch.utils.data.DataLoader(traindata, batch_size=1, num_workers = 4)
     file = "{path}/DataAugmentation/{filename}_CVAE_{beta}.obj".format(path = path, filename = filename, beta = beta)
     # 
@@ -106,10 +106,13 @@ def GeneratePlot(path, filename, beta, traindata):
         plotGeneImg(img[0][0,0,:,:], filename = "{path}/DataAugmentation/{file}_Generation/Glimps/Gen{beta}/img{j}".format(path = path, file = filename, beta = beta, j = j))
         omin = img[0].min()
         omax = img[0].max()
+        if sigma == 0:
+            sigma = (omax-omin)/6
         for i in range(10):
             CVAEmodel.seed = i
             result = CVAEmodel(img) 
-            outputimg = result[0][0,0,:,:].detach().numpy() * result[4][0,0,:,:].detach().numpy()
+            outputraw = result[0][0,0,:,:].detach().numpy()
+            outputimg = (outputraw + np.random.normal(0,sigma,outputraw.shape)) * result[4][0,0,:,:].detach().numpy()
             plotGeneImg( outputimg , filename = "{path}/DataAugmentation/{file}_Generation/Glimps/Gen{beta}/img{j}var{i}".format(path = path, file = filename, beta = beta, j = j, i = i), range = (omin.item(), omax.item()))
 
 

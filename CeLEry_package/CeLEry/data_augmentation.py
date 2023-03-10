@@ -113,7 +113,7 @@ def GeneratePlot(path, filename, beta, traindata, sigma = 0):
             result = CVAEmodel(img) 
             outputraw = result[0][0,0,:,:].detach().numpy()
             outputimg = (outputraw + np.random.normal(0,sigma,outputraw.shape)) * result[4][0,0,:,:].detach().numpy()
-            plotGeneImg( outputimg , filename = "{path}/DataAugmentation/{file}_Generation/Glimps/Gen{beta}/img{j}var{i}".format(path = path, file = filename, beta = beta, j = j, i = i), range = (omin.item(), omax.item()))
+            plotGeneImg( outputimg , filename = "{path}/DataAugmentation/{file}_Generation/Glimps/Gen{beta}/img{j}var{i}".format(path = path, file = filename, beta = beta, j = j, i = i), range = (-3, 3))
 
 
 def Data_Generation(path, filename, beta, dataSection1, traindata, nrep, obs_location = ['x_cord','y_cord']):

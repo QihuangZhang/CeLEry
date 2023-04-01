@@ -19,6 +19,17 @@ import matplotlib.pyplot as plt
 # from scipy.sparse import issparse
 
 def prefilter_cells(adata,min_counts=None,max_counts=None,min_genes=200,max_genes=None):
+	"""
+    This function filters cells in the AnnData object based on minimum/maximum counts and minimum/maximum genes.
+
+    :param adata: AnnData object containing the data matrix
+    :param min_counts: (Optional) Minimum number of counts for a cell to be retained
+    :param max_counts: (Optional) Maximum number of counts for a cell to be retained
+    :param min_genes: (Optional) Minimum number of genes for a cell to be retained, default is 200
+    :param max_genes: (Optional) Maximum number of genes for a cell to be retained
+
+    :return: None, updates the input AnnData object in-place
+    """
 	if min_genes is None and min_counts is None and max_genes is None and max_counts is None:
 		raise ValueError('Provide one of min_counts, min_genes, max_counts or max_genes.')
 	id_tmp=np.asarray([True]*adata.shape[0],dtype=bool)
@@ -49,19 +60,46 @@ def prefilter_specialgenes(adata,Gene1Pattern="ERCC",Gene2Pattern="MT-"):
 	adata._inplace_subset_var(id_tmp)
 
 
-def centralize (data):
-	datanew = data.copy()
-	for i in tqdm(range(datanew.shape[0])):
-		z = datanew[i,0,:,:]
-		zmin = z.min()
-		zmax = z.max()
-		if (zmax != zmin):
-			datanew[i,0,:,:] = (z-zmin)/(zmax-zmin)
-		else:
-			datanew[i,0,:,:] =  z / (zmax + 1)
-	return datanew
+def centralize(data):
+    """
+    This function normalizes the input data by scaling the values to the range [0, 1] for each sample.
+
+    :param data: NumPy array with shape (n_samples, n_channels, height, width), where n_samples is the
+                 number of samples, n_channels is the number of channels in each sample, and height and
+                 width are the dimensions of the data.
+    :return: datanew: A new NumPy array with the same shape as the input data but with normalized values.
+    """
+    # Create a copy of the input data to avoid modifying the original data
+    datanew = data.copy()
+
+    # Iterate through each sample in the data
+    for i in tqdm(range(datanew.shape[0])):
+        # Extract the data for the first channel of the current sample
+        z = datanew[i, 0, :, :]
+
+        # Find the minimum and maximum values in the data for this channel
+        zmin = z.min()
+        zmax = z.max()
+
+        # Normalize the data for this channel based on the minimum and maximum values
+        if (zmax != zmin):
+            datanew[i, 0, :, :] = (z - zmin) / (zmax - zmin)
+        else:
+            datanew[i, 0, :, :] = z / (zmax + 1)
+
+    # Return the normalized data
+    return datanew
 	
+
 def centralize2 (data):
+	"""
+    This function extend centralize() function but taking the zero values in the original data remains as zero after normalization
+
+    :param data: NumPy array with shape (n_samples, n_channels, height, width), where n_samples is the
+                 number of samples, n_channels is the number of channels in each sample, and height and
+                 width are the dimensions of the data.
+    :return: datanew: A new NumPy array with the same shape as the input data but with normalized values.
+    """
 	datanew = data.copy()
 	mask = (datanew != 0) * 1
 	zmin = datanew.min()
@@ -112,40 +150,6 @@ def getGeneImg (datainput, emptypixel, obsset = None):
 				img[x.iloc[inp]-xmin,y.iloc[inp]-ymin]=z[inp]
 		all_arr.append(img)
 	datainput.GeneImg = np.stack(all_arr)			
-
-# def getGeneImgSparse (adata, emptypixel):
-# 	# Transform the AnnData file into Genes of images for sparse matrix format
-# 	# adata: the input data of AnnData object
-# 	# emptypixel: a float that indicate the value on the missing pixel
-# 	x = adata.obs.iloc[:,0]
-# 	y = adata.obs.iloc[:,0]
-# 	xmin = x.min().iloc[0]
-# 	xmax = x.max().iloc[0]
-# 	ymin = y.min().iloc[0]
-# 	ymax = y.max().iloc[0]
-# 	## Append a one-side padding if the axis is odd
-# 	if ((xmax-xmin+1) % 2 == 0):
-# 		xlim = xmax-xmin+2
-# 	else:
-# 		xlim = xmax-xmin+1
-# 	if ((ymax-ymin+1) % 2 == 0):
-# 		ylim = ymax-ymin+2
-# 	else:
-# 		ylim = ymax-ymin+1 
-# 	shape = (xlim,ylim)
-# 	all_arr = []
-# 	firstIteration = True
-# 	for i in tqdm(range(adata.X.shape[1])):
-# 		z = adata.X[:,i] 
-# 		zmin = z.min()
-# 		zmax = z.max()
-# 		# create array for image : zmax+1 is the default value
-# 		img = np.array(np.ones(shape)*emptypixel)
-# 		for inp in range(x.shape[0]):
-# 			if (z[inp,0]!=emptypixel):
-# 				img[x.iloc[inp]-xmin,y.iloc[inp]-ymin]=z[inp,0]
-# 		all_arr.append(img)
-# 	adata.GeneImg = np.stack(all_arr)		
 
 
 def plotGeneImg (img, filename = None, range = None, plotcolor = 'YlGnBu'):
@@ -299,24 +303,47 @@ def get_Layer_LIBD (adata, coords_predict, referann):
 	return pred_layer
 
 
-def plot_layer (adata, folder, name, coloruse):
-	if coloruse is None:
-		colors_use = ['#46327e', '#365c8d', '#277f8e', '#1fa187', '#4ac16d', '#a0da39', '#fde725', '#ffbb78', '#2ca02c', '#ff7f0e', '#1f77b4', '#800080', '#959595', '#ffff00', '#014d01', '#0000ff', '#ff0000', '#000000']
-	else:
-		colors_use = coloruse
-	# colors_use = ['#111010', '#FFFF00', '#4a6fe3', '#bb7784', '#bec1d4', '#ff9896', '#98df8a', '#ffbb78', '#2ca02c', '#ff7f0e', '#1f77b4', '#800080', '#959595', '#ffff00', '#014d01', '#0000ff', '#ff0000', '#000000']
-	num_celltype = 7 # len(adata.obs["pred_layer"].unique())
-	adata.uns["pred_layer_str_colors"]=list(colors_use[:num_celltype])
-	cdata = adata.copy()
-	cdata.obs["x4"] = cdata.obs["x2"]*50
-	cdata.obs["x5"] = cdata.obs["x3"]*50
-	fig=sc.pl.scatter(cdata, alpha = 1, x = "x5", y = "x4", color = "pred_layer_str", palette = colors_use, show = False, size = 50)
-	fig.set_aspect('equal', 'box')
-	fig.figure.savefig("{path}/{name}_Layer_pred.pdf".format(path = folder, name = name), dpi = 300)
-	cdata.obs["Layer"] = cdata.obs["Layer"].astype(int).astype('str')
-	fig2=sc.pl.scatter(cdata, alpha = 1, x = "x5", y = "x4", color = "Layer", palette = colors_use, show = False, size = 50)
-	fig2.set_aspect('equal', 'box')
-	fig2.figure.savefig("{path}/{name}_Layer_ref.pdf".format(path = folder, name = name), dpi = 300)
+def plot_layer(adata, folder, name, coloruse=None):
+    """
+    This function creates and saves two scatter plots of the input AnnData object. One plot displays the predicted
+    layers and the other shows the reference layers.
+
+    :param adata: AnnData object containing the data matrix and necessary metadata
+    :param folder: Path to the folder where the plots will be saved
+    :param name: Prefix for the output plot file names
+    :param coloruse: (Optional) List of colors to be used for the plots, default is None
+
+    :return: None, saves two scatter plots as PDF files in the specified folder
+    """
+
+    # Define the default color palette if none is provided
+    if coloruse is None:
+        colors_use = ['#46327e', '#365c8d', '#277f8e', '#1fa187', '#4ac16d', '#a0da39', '#fde725', '#ffbb78', '#2ca02c',
+                      '#ff7f0e', '#1f77b4', '#800080', '#959595', '#ffff00', '#014d01', '#0000ff', '#ff0000', '#000000']
+    else:
+        colors_use = coloruse
+
+    # Define the number of cell types
+    num_celltype = 7
+    # Set the colors for the predicted layer in the AnnData object
+    adata.uns["pred_layer_str_colors"] = list(colors_use[:num_celltype])
+    # Create a copy of the input AnnData object to avoid modifying the original data
+    cdata = adata.copy()
+	# Scale the x2 and x3 columns in the AnnData object's observation data
+    cdata.obs["x4"] = cdata.obs["x2"] * 50
+    cdata.obs["x5"] = cdata.obs["x3"] * 50
+    # Create and customize the predicted layer scatter plot
+    fig = sc.pl.scatter(cdata, alpha=1, x="x5", y="x4", color="pred_layer_str", palette=colors_use, show=False, size=50)
+    fig.set_aspect('equal', 'box')
+    # Save the predicted layer scatter plot as a PDF file
+    fig.figure.savefig("{path}/{name}_Layer_pred.pdf".format(path=folder, name=name), dpi=300)
+    # Convert the 'Layer' column in the AnnData object's observation data to integer and then to string
+    cdata.obs["Layer"] = cdata.obs["Layer"].astype(int).astype('str')
+    # Create and customize the reference layer scatter plot
+    fig2 = sc.pl.scatter(cdata, alpha=1, x="x5", y="x4", color="Layer", palette=colors_use, show=False, size=50)
+    fig2.set_aspect('equal', 'box')
+    # Save the reference layer scatter plot as a PDF file
+    fig2.figure.savefig("{path}/{name}_Layer_ref.pdf".format(path=folder, name=name), dpi=300)
 
 
 def plot_confusion_matrix (referadata, filename, nlayer = 7):
@@ -336,23 +363,32 @@ def plot_confusion_matrix (referadata, filename, nlayer = 7):
 	# confplot = conf_mat_fig.get_figure()    
 	# confplot.savefig("{filename}.png".format(filename = filename), dpi=400)
 
-def make_annData_spatial (adata, spatial, min_cells = 3, filtered = False):
-    """ 
-    adata: an annData file for the transcriptomics data
-    spatial: an pandas dataframe recording the location information for each spot
+def make_annData_spatial(adata, spatial, min_cells=3, filtered=False):
+    """ This function processes the data, integrates the spatial information, 
+	and returns the processed AnnData object.
+    adata: AnnData object for the transcriptomics data
+    spatial: pandas DataFrame with location information for each spot
+    min_cells: Minimum number of cells to filter genes, default is 3
+    filtered: If True, only keep spots with a 'select' value of 1, default is False
     """
+
     if filtered == False:
+        # Add spatial data to the AnnData object's observation data
         adata.obs["select"] = spatial[1]
         adata.obs["x_cord"] = spatial[2]
         adata.obs["y_cord"] = spatial[3]
         adata.obs["x_pixel"] = spatial[4]
         adata.obs["y_pixel"] = spatial[5]
-        # Select captured samples
+
+        # Filter the AnnData object by 'select' value
         adata = adata[adata.obs["select"] == 1]
     else:
-        spatialsub = spatial[spatial.iloc[:,0] == 1]
+        # Filter the spatial data and join it with the AnnData object's observation data
+        spatialsub = spatial[spatial.iloc[:, 0] == 1]
         adata.obs = adata.obs.join(spatialsub)
         adata.obs.columns = ['select', 'x_cord', 'y_cord', 'x_pixel', 'y_pixel']
+
+    # Make gene names uppercase and set the 'genename' column in the variable data
     adata.var_names = [i.upper() for i in list(adata.var_names)]
     adata.var["genename"] = adata.var.index.astype("str")
     #
@@ -364,18 +400,28 @@ def make_annData_spatial (adata, spatial, min_cells = 3, filtered = False):
     sc.pp.log1p(adata)
     return adata
 
-def make_annData_query (adata):
-    """ 
-    adata: an annData file for the scRNA data
+def make_annData_query(adata):
     """
+    adata: AnnData object for the scRNA data
+    """
+
+    # Make gene names uppercase and set the 'genename' column in the variable data
     adata.var_names = [i.upper() for i in list(adata.var_names)]
     adata.var["genename"] = adata.var.index.astype("str")
-    #
+
+    # Make variable names unique, filter genes, and preprocess the data
     adata.var_names_make_unique()
-    prefilter_genes(adata, min_cells=3) # avoiding all genes are zeros
+
+    # Filter genes based on the minimum number of cells
+    prefilter_genes(adata, min_cells=3)
+
+    # Filter special genes (e.g., mitochondrial genes, ribosomal genes)
     prefilter_specialgenes(adata)
-    #Normalize and take log for UMI
+
+    # Normalize the expression data per cell and apply log transformation
     sc.pp.normalize_per_cell(adata)
     sc.pp.log1p(adata)
+
+    # Return the processed AnnData object
     return adata
 

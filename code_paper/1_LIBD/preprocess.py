@@ -17,9 +17,7 @@ import matplotlib.pyplot as plt
 
 #Read original data and save it to h5ad
 from scanpy import read_10x_h5
-import SpaGCN as spg
-
-os.chdir("SpaClusterPython")
+import CeLEry as cel
 from data.LIBD.LIBD_gene_select import d_g
 import json
 
@@ -62,8 +60,8 @@ def get_LIBD_top_DEgenes (studyID):
     #
     #  Preprocessing
     adata.var_names_make_unique()
-    spg.prefilter_genes(adata,min_cells=3) # avoiding all genes are zeros
-    spg.prefilter_specialgenes(adata)
+    cel.prefilter_genes(adata,min_cells=3) # avoiding all genes are zeros
+    cel.prefilter_specialgenes(adata)
     #Normalize and take log for UMI-------
     sc.pp.normalize_per_cell(adata)
     sc.pp.log1p(adata)
@@ -81,20 +79,9 @@ genelist73 = get_LIBD_top_DEgenes (151673)
 genelist74 = get_LIBD_top_DEgenes (151674)
 genelist75 = get_LIBD_top_DEgenes (151675)
 
-with open('../data/Hodge/gene_selected_151673.json') as json_file:
-    gene73 = json.load(json_file)
-
-with open('../data/Hodge/gene_selected_151674.json') as json_file:
-    gene74 = json.load(json_file)
-
-with open('../data/Hodge/gene_selected_151675.json') as json_file:
-    gene75 = json.load(json_file)
 
 # Get the gene list from the pre-screening
-genelistlist73 = [gene73[str(i)] for i in  range(len(gene73))]  # transform dictionary to a list of lists
-genelistlist74 = [gene74[str(i)] for i in  range(len(gene74))]  # transform dictionary to a list of lists
-genelistlist75 = [gene75[str(i)] for i in  range(len(gene75))]  # transform dictionary to a list of lists
-genelistlist = genelistlist73 + genelistlist74 + genelistlist75 + genelist73 + genelist74 + genelist75
+genelistlist = genelist73 + genelist74 + genelist75
 genelist = sum(genelistlist, [])  # merge the list of lists
 genelistuni = list( dict.fromkeys(genelist) )   # remove duplicates
 
@@ -138,8 +125,8 @@ def Preprocess_SpTrans (studyID):
     #
     #  Preprocessing
     adata.var_names_make_unique()
-    spg.prefilter_genes(adata,min_cells=3) # avoiding all genes are zeros
-    spg.prefilter_specialgenes(adata)
+    cel.prefilter_genes(adata,min_cells=3) # avoiding all genes are zeros
+    cel.prefilter_specialgenes(adata)
     #Normalize and take log for UMI-------
     sc.pp.normalize_per_cell(adata)
     sc.pp.log1p(adata)

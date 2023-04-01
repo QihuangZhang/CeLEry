@@ -2,7 +2,7 @@
 <h1><center>CeLEry Tutorial</center></h1>
 
 
-Author: Qihuang Zhang*, Jian Hu, Kejie Li, Baohong Zhang, David Dai,
+Author: Qihuang Zhang*, Shunzhou Jiang, Amelia Schroeder, Jian Hu, Kejie Li, Baohong Zhang, David Dai,
 Edward B. Lee, Rui Xiao, Mingyao Li*
 
 
@@ -12,7 +12,6 @@ Edward B. Lee, Rui Xiao, Mingyao Li*
 2.  Import modules
 3.  Data Loading
 4.  Run CeLEry
-5.  Data Augmentation
 
 ### 1. Installation 
 

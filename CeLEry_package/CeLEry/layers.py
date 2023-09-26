@@ -15,7 +15,7 @@ class ConvolutionNN(Module):
     """
     Simple CNN layer
     """
-    def __inti__(self, , )
+    def __init__(self, , )
 
 def getGeneImg (adata, geneset = None):
     # Transform the AnnData file into Genes of images

@@ -975,6 +975,7 @@ Output:
 The testing data has NaN.
 
 
+Now we use `drop_NaN` function in CeLEry package to remove the genes that has NaN (due to no variation in the data). This step is usually not needed if preprocessing is properly made.
 ``` {.python}
 Qdata = cel.drop_NaN(Qdata)
 Qdata

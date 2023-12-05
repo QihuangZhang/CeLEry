@@ -928,7 +928,7 @@ cel.get_zscore(Rdata)
 ``` {.python}
 Qdata
 ```
-
+Output:
 ```
     AnnData object with n_obs × n_vars = 3000 × 26423
         obs: 'cellname', 'sample', 'groupid', 'final_celltype', 'maxprob', 'imaxprob', 'trem2', 'atscore', 'apoe', 'sampleID', 'n_counts'
@@ -939,8 +939,7 @@ Qdata
 ``` {.python}
 Rdata
 ```
-
-
+Output:
 ```    
     AnnData object with n_obs × n_vars = 3611 × 1134
         obs: 'x2', 'x3', 'Layer', 'Layer_character', 'n_counts'
@@ -958,7 +957,7 @@ practice to check whether NA exists in the data:
 ``` {.python}
 np.isnan(Rdata.X).any()
 ```
-
+Output:
 ```    
 ArrayView(False)
 ```
@@ -969,7 +968,7 @@ The training data is good
 ``` {.python}
 np.isnan(Qdata.X).any()
 ```
-
+Output:
 ```
     ArrayView(True)
 ```
@@ -980,7 +979,7 @@ The testing data has NaN.
 Qdata = cel.drop_NaN(Qdata)
 Qdata
 ```
-
+Output:
 ```
     AnnData object with n_obs × n_vars = 3000 × 23796
         obs: 'cellname', 'sample', 'groupid', 'final_celltype', 'maxprob', 'imaxprob', 'trem2', 'atscore', 'apoe', 'sampleID', 'n_counts'
@@ -1000,7 +999,7 @@ Reference_select = Rdata[:,common_gene]
 Output of comparison after gene filtering:
 ``` {.python}
 >>> Qdata
-AnnData object with n_obs × n_vars = 2452 × 1134
+AnnData object with n_obs × n_vars = 2452 × 23796
     obs: 'cellname', 'sample', 'groupid', 'final_celltype', 'maxprob', 'imaxprob', 'trem2', 'atscore', 'apoe', 'sampleID', 'n_counts'
     var: 'Ensembl', 'genename', 'n_cells'
 >>> Query_select

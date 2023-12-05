@@ -425,3 +425,28 @@ def make_annData_query(adata):
     # Return the processed AnnData object
     return adata
 
+def drop_NaN(adata):
+    """
+    Removes columns from an AnnData object's .X attribute that contain NaN values and
+    returns a new AnnData object.
+
+    Args:
+    adata (AnnData): An AnnData object containing gene expression data.
+
+    Returns:
+    AnnData: A new AnnData object with columns containing NaN values removed from the .X attribute.
+    """
+    # Check if .X is a sparse matrix and convert it to a dense format if necessary
+    if issubclass(type(adata.X), np.ndarray):
+        X_dense = adata.X
+    else:
+        X_dense = adata.X.toarray()  # For sparse matrices
+    # Create a mask for columns that do not contain NaN values
+    non_nan_col_mask = ~np.isnan(X_dense).any(axis=0)
+    # Filter the columns in .X using the mask
+    X_filtered = X_dense[:, non_nan_col_mask]
+    # Update the .var DataFrame to reflect the removal of columns
+    var_filtered = adata.var.iloc[non_nan_col_mask]
+    # Create a new AnnData object with the filtered data
+    new_adata = sc.AnnData(X=X_filtered, obs=adata.obs, var=var_filtered)
+    return new_adata

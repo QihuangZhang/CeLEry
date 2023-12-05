@@ -925,6 +925,69 @@ cel.get_zscore(Qdata)
 cel.get_zscore(Rdata)
 ```
 
+``` {.python}
+Qdata
+```
+
+```
+    AnnData object with n_obs × n_vars = 3000 × 26423
+        obs: 'cellname', 'sample', 'groupid', 'final_celltype', 'maxprob', 'imaxprob', 'trem2', 'atscore', 'apoe', 'sampleID', 'n_counts'
+        var: 'Ensembl', 'genename', 'n_cells'
+```
+
+
+``` {.python}
+Rdata
+```
+
+
+```    
+    AnnData object with n_obs × n_vars = 3611 × 1134
+        obs: 'x2', 'x3', 'Layer', 'Layer_character', 'n_counts'
+        var: 'gene_ids', 'feature_types', 'genome', 'genename'
+        uns: 'wilcoxon'
+```
+
+
+One common error that can happen is that after normalization, the gene
+expression can have NAs due to the lack of variability. (Usually because the data is not well preprocessed.) This may cause
+the problem when training the data or evaluate the query. It is a good
+practice to check whether NA exists in the data:
+
+
+``` {.python}
+np.isnan(Rdata.X).any()
+```
+
+```    
+ArrayView(False)
+```
+The training data is good
+
+
+
+``` {.python}
+np.isnan(Qdata.X).any()
+```
+
+```
+    ArrayView(True)
+```
+The testing data has NaN.
+
+
+``` {.python}
+Qdata = cel.drop_NaN(Qdata)
+Qdata
+```
+
+```
+    AnnData object with n_obs × n_vars = 3000 × 23796
+        obs: 'cellname', 'sample', 'groupid', 'final_celltype', 'maxprob', 'imaxprob', 'trem2', 'atscore', 'apoe', 'sampleID', 'n_counts'
+        var: 'Ensembl', 'genename', 'n_cells'
+```
+
+
 For many times, the gene set in query data (`Qdata`) is different from the reference data (`Rdata`). To ensure the model trained by reference data is applicable to the query data, it is essential to the genes sets are identical for both datasets.
 
 ``` {.python}
@@ -941,9 +1004,10 @@ AnnData object with n_obs × n_vars = 2452 × 1134
     obs: 'cellname', 'sample', 'groupid', 'final_celltype', 'maxprob', 'imaxprob', 'trem2', 'atscore', 'apoe', 'sampleID', 'n_counts'
     var: 'Ensembl', 'genename', 'n_cells'
 >>> Query_select
-View of AnnData object with n_obs × n_vars = 2452 × 1134
-    obs: 'cellname', 'sample', 'groupid', 'final_celltype', 'maxprob', 'imaxprob', 'trem2', 'atscore', 'apoe', 'sampleID', 'n_counts'
-    var: 'Ensembl', 'genename', 'n_cells'
+    View of AnnData object with n_obs × n_vars = 3611 × 1120
+        obs: 'x2', 'x3', 'Layer', 'Layer_character', 'n_counts'
+        var: 'gene_ids', 'feature_types', 'genome', 'genename'
+        uns: 'wilcoxon'
 ```
 
 

@@ -16,7 +16,7 @@ Edward B. Lee, Rui Xiao, Mingyao Li*
 ### 1. Installation 
 
 To install CeLEry package you must make sure that your python version is
-over 3.5. If you don't know the version of python you can check it by:
+over 3.5 (3.8 recommended). If you don't know the version of python you can check it by:
 ``` {.python}
 import platform
 platform.python_version()
@@ -53,7 +53,7 @@ create a new environment, for example, CeLEry (you can change to any
 name you like).
 ``` {.python}
 #create an environment called CeLEry
-conda create -n CeLEry python=3.7.9
+conda create -n CeLEry python=3.8
 #activate your environment 
 conda activate CeLEry
 git clone https://github.com/QihuangZhang/CeLEry

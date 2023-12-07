@@ -425,6 +425,27 @@ def make_annData_query(adata):
     # Return the processed AnnData object
     return adata
 
+def get_common_genes(Qdata, Rdata):
+    """
+    This function identifies the common genes present in two different datasets.
+
+    Args:
+    Qdata (DataFrame): A DataFrame containing query data, with gene names in the 'genename' column.
+    Rdata (DataFrame): A DataFrame containing reference data, also with gene names in the 'genename' column.
+
+    Returns:
+    list: A list of gene names that are common to both Qdata and Rdata.
+    """
+    # Extracting gene names from the 'genename' column of Qdata
+    Qgene = Qdata.var["genename"].tolist()
+    # Extracting gene names from the 'genename' column of Rdata
+    Rgene = Rdata.var["genename"].tolist()
+    # Finding the intersection of gene lists to get common genes
+    Gene_common = list(set(Qgene).intersection(Rgene))
+    # Returning the list of common genes
+    return Gene_common
+
+
 def drop_NaN(adata):
     """
     Removes columns from an AnnData object's .X attribute that contain NaN values and

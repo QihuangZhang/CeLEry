@@ -6,4 +6,4 @@ tqdm
 scanpy>=1.5
 scikit-image
 anndata
-sklearn
+scikit-learn

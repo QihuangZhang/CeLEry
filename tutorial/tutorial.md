@@ -196,6 +196,27 @@ The fitting function `Fit_cord` involves the following parameters:
 
 -   filename: the name of the model object to be saved to the path.
 
+
+
+##### Training Tips:  Tuning matters a lot!!
+
+Optimizing the parameters of our training algorithm is crucial for achieving the best performance. Let’s explore the key settings that you’ll need to tweak to improve the predictivity:
+
+###### Choosing the Right Batch Size
+Batch size is a critical determinant of your training process's success. While beginning with a batch size of 32 is conventional, we encourage experimenting with this figure. Should you encounter 'NA' errors, indicative of numerical instability, reducing the batch size to 8 may prove beneficial. Ultimately, the objective is to identify the optimal batch size that best suits the unique requirements of your specific scenario.
+
+> Try adding an option ' batch_size = 8 ' in your `Fit_layer()` function.
+
+###### Setting the Initial Learning Rate
+The initial learning rate effectively sets the pace of progress during your training regimen. Initiating the process with a learning rate of 0.1 enables the algorithm to undertake significant adjustments at the outset. Importantly, the algorithm is designed to intelligently reduce the learning rate if it detects excessive increases in loss, preventing overfitting and ensuring smoother convergence. This adaptive modification is regulated by the 'number error try' option (see below), which monitors the frequency of deteriorating loss metrics, adjusting the rate accordingly to optimize performance.
+
+> Try adding an option ' initial_learning_rate = 0.01 ' in your `Fit_layer()` function.
+
+###### Adjusting for Error Tries
+Speaking of error tries, this setting is your safeguard against the instable loss changes. Align this with the number of epochs you plan to run (given by option `num_epochs_max`). It helps to adjust our learning rate dynamically.
+
+> Try adding an option ' number_error_try = 60 ' in your `Fit_layer()` function.
+
 ##### Prediction
 
 Then, we apply the trained model to the query data to predict the
@@ -1033,6 +1054,9 @@ model_train = cel.Fit_layer (data_train = Reference_select, layer_weights = laye
                              hidden_dims = [30, 25, 15], num_epochs_max = 500, path = "output/tutorial", filename = "Org_layer")
 ```
 
+- [Training Tips: Tuning Matters a Lot!!](#training-tips-tuning-matters-a-lot)
+
+
 Then, we apply the trained model to the scRNA-seq/snRNA-seq data:
 
 ```
@@ -1104,6 +1128,8 @@ model_train = cel.Fit_domain (data_train = Reference_select, domain_weights = do
 
 model_train
 ```
+
+- [Training Tips: Tuning Matters a Lot!!](#training-tips-tuning-matters-a-lot)
 
 To predict the results, we implement `Predict_domain` function. A probabilitic classificatoin matrix will be returned and the deterministic domain prediction will be attached to `.obs`.
 

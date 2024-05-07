@@ -27,7 +27,7 @@ def seed_worker(worker_id):
     np.random.seed(worker_seed)
     random.seed(worker_seed)
 
-def Fit_cord (data_train, location_data = None, hidden_dims = [30, 25, 15], num_epochs_max = 500, path = "", filename = "PreOrg_Mousesc", batch_size = 4, num_workers = 1, number_error_try = 15, initial_learning_rate = 0.0001, seednum = 2021):
+def Fit_cord (data_train, location_data = None, hidden_dims = [30, 25, 15], num_epochs_max = 500, path = "", filename = "PreOrg_Mousesc", batch_size = 4, num_workers = 1, number_error_try = 15, initial_learning_rate = 0.001, seednum = 2021):
     #
     random.seed(seednum)
     torch.manual_seed(seednum)
@@ -63,7 +63,7 @@ def Fit_cord (data_train, location_data = None, hidden_dims = [30, 25, 15], num_
     return DNNmodel
 
 
-def Fit_region (data_train, alpha = 0.95, location_data = None, hidden_dims = [30, 25, 15], num_epochs_max = 500, path = "", filename = "PreOrg_Mousesc", batch_size = 4, num_workers = 1, number_error_try = 15, initial_learning_rate = 0.0001, seednum = 2021):
+def Fit_region (data_train, alpha = 0.95, location_data = None, hidden_dims = [30, 25, 15], num_epochs_max = 500, path = "", filename = "PreOrg_Mousesc", batch_size = 4, num_workers = 1, number_error_try = 15, initial_learning_rate = 0.001, seednum = 2021):
     #
     random.seed(seednum)
     torch.manual_seed(seednum)
@@ -95,7 +95,7 @@ def Fit_region (data_train, alpha = 0.95, location_data = None, hidden_dims = [3
     pickle.dump(DNNmodel, filehandler2)
     return DNNmodel    
 
-def Fit_layer (data_train, layer_weights, layer_data = None, layerkey = "layer", hidden_dims = [10, 5, 2], num_epochs_max = 500, path = "", filename = "PreOrg_layersc", batch_size = 4, num_workers = 1, number_error_try = 15, initial_learning_rate = 0.0001, seednum = 2021):
+def Fit_layer (data_train, layer_weights, layer_data = None, layerkey = "layer", hidden_dims = [10, 5, 2], num_epochs_max = 500, path = "", filename = "PreOrg_layersc", batch_size = 4, num_workers = 1, number_error_try = 15, initial_learning_rate = 0.001, seednum = 2021):
     #
     random.seed(seednum)
     torch.manual_seed(seednum)
@@ -123,7 +123,7 @@ def Fit_layer (data_train, layer_weights, layer_data = None, layerkey = "layer",
     filehandler2 = open(filename3, 'wb') 
     pickle.dump(DNNmodel, filehandler2)
 
-def Fit_domain (data_train, domain_weights, domain_data = None, domainkey = "layer", hidden_dims = [10, 5, 2], num_epochs_max = 500, path = "", filename = "PreOrg_domainsc", batch_size = 4, num_workers = 1, number_error_try = 15, initial_learning_rate = 0.0001, seednum = 2021):
+def Fit_domain (data_train, domain_weights, domain_data = None, domainkey = "layer", hidden_dims = [10, 5, 2], num_epochs_max = 500, path = "", filename = "PreOrg_domainsc", batch_size = 4, num_workers = 1, number_error_try = 15, initial_learning_rate = 0.001, seednum = 2021):
     #
     random.seed(seednum)
     torch.manual_seed(seednum)

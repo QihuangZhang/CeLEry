@@ -1,7 +1,7 @@
 # CeLEry
 ## Leveraging  spatial  transcriptomics  data  to  recover cell  locationsin  single-cell RNA-seq with CeLEry
 
-### Qihuang Zhang, Shunzhou Jiang, Amelia Schroeder, Jian Hu, Kejie Li, Baohong Zhang, David Dai, Edward B. Lee, Rui Xiao, Mingyao Li*
+### Qihuang Zhang*, Shunzhou Jiang, Amelia Schroeder, Jian Hu, Kejie Li, Baohong Zhang, David Dai, Edward B. Lee, Rui Xiao, Mingyao Li*
 
 Single-cell RNA sequencing (scRNA-seq) has transformed our understanding of cellular heterogeneity in health and disease, but the lack of physical relationships among dissociated cells has limited its applications. Here we present CeLEry, a supervised deep learning algorithm to recover the spatial origins of cells in scRNA-seq by leveraging gene expression and spatial location information learned from spatial transcriptomics (ST) data. CeLEry has a data augmentation procedure via variational autoencoder to improve the robustness of the method and overcome noise in scRNA-seq. CeLEry can infer the spatial origins of cells in scRNA-seq at multiple levels, including 2D location as well as the spatial domain or tissue layer of a cell. CeLEry also provides uncertainty estimates for the recovered location information. Comprehensive evaluations on multiple datasets generated from mouse and human brains show that CeLEry can reliably recover the spatial location information for cells in scRNA-seq.
 

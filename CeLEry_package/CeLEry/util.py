@@ -197,7 +197,7 @@ def plotarrangefile (bdataexpand, foldername, label, Path = "../output/"):
 
 
 def get_zscore (adata, mean = None, sd = None ):
-	genotypedata = (adata.X.A if issparse(adata.X) else adata.X)
+	genotypedata = (adata.X.toarray() if issparse(adata.X) else adata.X)
 	if mean is None:
 		genemean = np.mean(genotypedata, axis =0)
 		genesd = np.std(genotypedata, axis = 0)

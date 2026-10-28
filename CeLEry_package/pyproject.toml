@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "CeLEryPy"
-version = "1.2.1"
+version = "1.2.2"
 description = "Leverage spatial transcriptomics data to recover cell locations in single-cell RNA RNA-seq"
 readme = "README.md"
 authors = [{ name = "Qihuang Zhang", email = "qihuang.zh@gmail.com"}]
@@ -17,7 +17,7 @@ classifiers = [
 keywords = ["CeLEry", "spatial transcriptomics", "scRNA-seq"]
 dependencies = [
     "torch >= 1.8",
-    "pandas >= 1.4",
+    "pandas >= 1.4, < 3",
     "numpy >= 1.20",
     "scipy",
     "tqdm",

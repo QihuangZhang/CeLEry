@@ -1,0 +1,22 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: mamba-org/setup-micromamba@v3
+        with:
+          environment-file: environment.yml
+          cache-environment: true
+      - name: Install CeLEry from this repository
+        run: pip install --no-deps ./CeLEry_package
+      - name: Run the smoke tests
+        run: python -m pytest -q tests

@@ -1,0 +1,17 @@
+name: celery
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12.15
+  - pytorch=2.14.1=cpu*
+  - numpy=2.5.4
+  - scipy=1.18.1
+  - pandas=2.3.3
+  - anndata=0.13.4
+  - scanpy=1.12.4
+  - scikit-learn=1.9.1
+  - scikit-image=0.26.0
+  - matplotlib-base=3.11.2
+  - tqdm=4.70.1
+  - pytest=9.1.1
+  - pip

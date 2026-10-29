@@ -116,7 +116,7 @@ def getGeneImg (datainput, emptypixel, obsset = None):
 	# datainput: the input data of AnnData object
 	# obsset: the set of location column names if they are not x_cord, y_cord
 	# emptypixel: a float that indicate the value on the missing pixel
-	adata = (datainput.X.A if issparse(datainput.X) else datainput.X)
+	adata = (datainput.X.toarray() if issparse(datainput.X) else datainput.X)
 	if obsset is None:
 		x = datainput.obs["x_cord"]
 		y = datainput.obs["y_cord"]

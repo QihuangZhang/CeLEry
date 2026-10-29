@@ -136,8 +136,8 @@ adata.var["genename"] = adata.var.index.astype("str")
 adata.write_h5ad("../tutorial/data/151673/sample_data.h5ad")
 """
 #Read in gene expression and spatial location
-Qdata = sc.read("data/tutorial/MouseSCToy.h5ad")
-Rdata = sc.read("data/tutorial/MousePosteriorToy.h5ad")
+Qdata = sc.read("tutorial/data/MouseSCToy.h5ad")
+Rdata = sc.read("tutorial/data/MousePosteriorToy.h5ad")
 
 Rdata
 ```
@@ -939,8 +939,8 @@ for layers together with a single cell RNA data collected from an
 Alzheimer\'s study.
 
 ``` {.python}
-Qdata = sc.read("data/tutorial/AlzheimerToy.h5ad")
-Rdata = sc.read("data/tutorial/DataLayerToy.h5ad")
+Qdata = sc.read("tutorial/data/AlzheimerToy.h5ad")
+Rdata = sc.read("tutorial/data/DataLayerToy.h5ad")
 
 cel.get_zscore(Qdata)
 cel.get_zscore(Rdata)

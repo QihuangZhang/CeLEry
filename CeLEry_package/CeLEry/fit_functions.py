@@ -38,7 +38,7 @@ def Fit_cord (data_train, location_data = None, hidden_dims = [30, 25, 15], num_
     if location_data is None:
         location_data = data_train.obs
     #
-    traindata = (data_train.X.A if issparse(data_train.X) else data_train.X)
+    traindata = (data_train.X.toarray() if issparse(data_train.X) else data_train.X)
     tdatax = np.expand_dims(traindata, axis = 0)
     tdata_rs = np.swapaxes(tdatax, 1, 2)
     DataTra = wrap_gene_location(tdata_rs, location_data)
@@ -74,7 +74,7 @@ def Fit_region (data_train, alpha = 0.95, location_data = None, hidden_dims = [3
     if location_data is None:
         location_data = data_train.obs
     #
-    traindata = (data_train.X.A if issparse(data_train.X) else data_train.X)
+    traindata = (data_train.X.toarray() if issparse(data_train.X) else data_train.X)
     tdatax = np.expand_dims(traindata, axis = 0)
     tdata_rs = np.swapaxes(tdatax, 1, 2)
     DataTra = wrap_gene_location(tdata_rs, location_data)
@@ -107,7 +107,7 @@ def Fit_layer (data_train, layer_weights, layer_data = None, layerkey = "layer",
         layer_data = data_train.obs
     #
     layer_weights = torch.tensor(layer_weights.to_numpy())
-    traindata = (data_train.X.A if issparse(data_train.X) else data_train.X)
+    traindata = (data_train.X.toarray() if issparse(data_train.X) else data_train.X)
     tdatax = np.expand_dims(traindata, axis = 0)
     tdata_rs = np.swapaxes(tdatax, 1, 2)
     DataTra = wrap_gene_layer(tdata_rs, layer_data, layerkey)
@@ -135,7 +135,7 @@ def Fit_domain (data_train, domain_weights, domain_data = None, domainkey = "lay
         domain_data = data_train.obs
     #
     domain_weights = torch.tensor(domain_weights.to_numpy(), dtype=torch.float32)
-    traindata = (data_train.X.A if issparse(data_train.X) else data_train.X)
+    traindata = (data_train.X.toarray() if issparse(data_train.X) else data_train.X)
     tdatax = np.expand_dims(traindata, axis = 0)
     tdata_rs = np.swapaxes(tdatax, 1, 2)
     DataTra = wrap_gene_domain(tdata_rs, domain_data, domainkey)
@@ -152,7 +152,7 @@ def Fit_domain (data_train, domain_weights, domain_data = None, domainkey = "lay
     pickle.dump(DNNmodel, filehandler2)
 
 def Predict_cord (data_test, path = "", filename = "PreOrg_Mousesc", location_data = None):
-    testdata= (data_test.X.A if issparse(data_test.X) else data_test.X)
+    testdata= (data_test.X.toarray() if issparse(data_test.X) else data_test.X)
     if location_data is None:
         location_data = pd.DataFrame(np.ones((data_test.shape[0],2)), columns = ["psudo1", "psudo2"])
     ## Wrap up Validation data in to dataloader
@@ -192,7 +192,7 @@ def report_prop_method_sc (folder, name, data_test, Val_loader, outname = ""):
 
 
 def Predict_region (data_test, path = "", filename = "PreOrg_ConfScore", location_data = None, hist = ""):
-    testdata= (data_test.X.A if issparse(data_test.X) else data_test.X)
+    testdata= (data_test.X.toarray() if issparse(data_test.X) else data_test.X)
     if location_data is None:
         location_data = pd.DataFrame(np.ones((data_test.shape[0],2)), columns = ["psudo1", "psudo2"])
     ## Wrap up Validation data in to dataloader
@@ -215,7 +215,7 @@ def Predict_domain (data_test, class_num,  path = "", filename = "PreOrg_domains
         truth_label = "psudo_label"
         location_data = pd.DataFrame(np.ones((data_test.shape[0],1)), columns = ["psudo_label"])
     ## Wrap up Validation data in to dataloader
-    testdata = (data_test.X.A if issparse(data_test.X) else data_test.X)
+    testdata = (data_test.X.toarray() if issparse(data_test.X) else data_test.X)
     vdatax = np.expand_dims(testdata, axis = 0)
     vdata_rs = np.swapaxes(vdatax, 1, 2)
     DataVal = wrap_gene_domain(vdata_rs, location_data, truth_label)
@@ -308,7 +308,7 @@ def Predict_layer (data_test, class_num,  path = "", filename = "PreOrg_layernsc
         location_data = pd.DataFrame(np.ones((data_test.shape[0],1)), columns = ["psudo_label"])
         location_data.iloc[0] = 2
     ## Wrap up Validation data in to dataloader
-    testdata = (data_test.X.A if issparse(data_test.X) else data_test.X)
+    testdata = (data_test.X.toarray() if issparse(data_test.X) else data_test.X)
     vdatax = np.expand_dims(testdata, axis = 0)
     vdata_rs = np.swapaxes(vdatax, 1, 2)
     DataVal = wrap_gene_layer(vdata_rs, location_data, layerkey = truth_label)

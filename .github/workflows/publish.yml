@@ -1,0 +1,48 @@
+# Publishes CeLEryPy to PyPI when a GitHub release is published. PyPI accepts the upload through
+# trusted publishing, which is set up once on PyPI (project CeLEryPy > Publishing: owner
+# QihuangZhang, repository CeLEry, workflow publish.yml, environment pypi), so no API token is needed.
+name: publish
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # A version number can be published to PyPI only once, so the tag must match both version fields.
+      - name: Check that the release tag matches the package version
+        run: |
+          init=$(python -c "import re; print(re.search(r'__version__ = [\'\"](.+?)[\'\"]', open('CeLEry_package/CeLEry/__init__.py').read())[1])")
+          toml=$(python -c "import tomllib; print(tomllib.load(open('CeLEry_package/pyproject.toml', 'rb'))['project']['version'])")
+          test "${init}" = "${toml}" || { echo "__version__ ${init} differs from pyproject.toml ${toml}"; exit 1; }
+          test "${GITHUB_REF_NAME}" = "v${init}" || { echo "tag ${GITHUB_REF_NAME} does not match version ${init}"; exit 1; }
+      - run: pip install build
+      - run: python -m build CeLEry_package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: CeLEry_package/dist/
+
+  pypi:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/CeLEryPy
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1

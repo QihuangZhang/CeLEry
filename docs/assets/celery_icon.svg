@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 519.62 600" width="519.62" height="600">
+<title>CeLEry</title>
+<path d="M259.81,17.32 L15,158.66 L15,441.34 L259.81,582.68 L504.62,441.34 L504.62,158.66 Z" fill="#FFFFFF"/>
+<circle cx="370.66" cy="364" r="52" fill="#2C738E"/>
+<circle cx="259.81" cy="428" r="52" fill="#433E85"/>
+<circle cx="148.96" cy="364" r="52" fill="#2C738E"/>
+<circle cx="148.96" cy="236" r="52" fill="#6ECE58"/>
+<circle cx="259.81" cy="172" r="52" fill="#F1E51D"/>
+<circle cx="370.66" cy="236" r="52" fill="#6ECE58"/>
+<circle cx="259.81" cy="300" r="58" fill="#FFFFFF"/>
+<g stroke="#D6544A" stroke-width="20" stroke-linecap="round" fill="none"><circle cx="259.81" cy="300" r="34"/><path d="M203.81,300 H315.81 M259.81,244 V356"/></g>
+<path d="M259.81,15.59 L13.5,157.8 L13.5,442.2 L259.81,584.41 L506.12,442.2 L506.12,157.8 Z" fill="none" stroke="#3D7A27" stroke-width="27" stroke-linejoin="miter"/>
+</svg>

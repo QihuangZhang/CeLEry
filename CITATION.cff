@@ -1,0 +1,68 @@
+cff-version: 1.2.0
+message: "If you use CeLEry in your research, please cite the accompanying paper."
+title: "CeLEry: cell location recovery in single-cell RNA-seq"
+type: software
+version: "1.2.2"
+date-released: "2026-10-29"
+authors:
+  - family-names: Zhang
+    given-names: Qihuang
+    email: qihuang.zhang@mcgill.ca
+    affiliation: "Department of Epidemiology, Biostatistics and Occupational Health, McGill University"
+    orcid: "https://orcid.org/0000-0003-1455-2159"
+  - family-names: Jiang
+    given-names: Shunzhou
+  - family-names: Schroeder
+    given-names: Amelia
+  - family-names: Hu
+    given-names: Jian
+  - family-names: Li
+    given-names: Kejie
+  - family-names: Zhang
+    given-names: Baohong
+  - family-names: Dai
+    given-names: David
+  - family-names: Lee
+    given-names: Edward B.
+  - family-names: Xiao
+    given-names: Rui
+  - family-names: Li
+    given-names: Mingyao
+repository-code: "https://github.com/QihuangZhang/CeLEry"
+url: "https://qihuangzhang.github.io/CeLEry/"
+keywords:
+  - spatial transcriptomics
+  - single-cell RNA-seq
+  - cell location recovery
+  - deep learning
+  - data augmentation
+license: MIT
+preferred-citation:
+  type: article
+  title: "Leveraging spatial transcriptomics data to recover cell locations in single-cell RNA-seq with CeLEry"
+  authors:
+    - family-names: Zhang
+      given-names: Qihuang
+    - family-names: Jiang
+      given-names: Shunzhou
+    - family-names: Schroeder
+      given-names: Amelia
+    - family-names: Hu
+      given-names: Jian
+    - family-names: Li
+      given-names: Kejie
+    - family-names: Zhang
+      given-names: Baohong
+    - family-names: Dai
+      given-names: David
+    - family-names: Lee
+      given-names: Edward B.
+    - family-names: Xiao
+      given-names: Rui
+    - family-names: Li
+      given-names: Mingyao
+  journal: "Nature Communications"
+  volume: 14
+  start: 4050
+  year: 2023
+  doi: "10.1038/s41467-023-39895-3"

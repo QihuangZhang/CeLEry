@@ -1,0 +1,49 @@
+name: Question about my data or results
+description: Help with preparing data, choosing settings or reading the output.
+labels: [question]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Please check [Reading the output](https://qihuangzhang.github.io/CeLEry/reading-output/)
+        first. It covers coordinates, confidence regions, layer and domain probabilities, the
+        settings that matter and common problems.
+  - type: dropdown
+    id: task
+    attributes:
+      label: Task
+      options:
+        - Cell coordinates
+        - Confidence regions
+        - Tissue layers
+        - Spatial domains
+        - Data augmentation
+        - Pretrained brain model
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Spatial reference
+      options:
+        - 10x Visium
+        - MERFISH / MERSCOPE
+        - 10x Xenium
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to do?
+      description: >-
+        The tissue, the reference and query data (number of spots, cells and shared genes), and
+        the question you want CeLEry to answer.
+    validations:
+      required: true
+  - type: textarea
+    id: run
+    attributes:
+      label: What did you run, and what did you get?
+      description: The calls with their settings and the output or figure.

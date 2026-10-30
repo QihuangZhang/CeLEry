@@ -1,0 +1,13 @@
+/* CeLEry colors: the green of the logo border, with a lighter green on dark backgrounds. */
+:root {
+  --md-primary-fg-color: #3d7a27;
+  --md-primary-fg-color--light: #5e9a45;
+  --md-primary-fg-color--dark: #2c5c1c;
+  --md-accent-fg-color: #5e9a45;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #2c5c1c;
+  --md-typeset-a-color: #8cc56a;
+  --md-accent-fg-color: #a6d685;
+}

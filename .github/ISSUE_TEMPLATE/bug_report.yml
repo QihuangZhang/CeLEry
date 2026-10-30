@@ -1,0 +1,36 @@
+name: Bug report
+description: Something in CeLEry does not work as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Thanks for reporting! A small example that reproduces the problem, ideally on the data of
+        the quick start (`examples/data`) or of the tutorials (`tutorial/data`), makes it much
+        faster to fix.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: Code that reproduces it
+      render: python
+  - type: textarea
+    id: error
+    attributes:
+      label: Full error message
+      render: text
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions
+      description: >-
+        Your operating system and the output of
+        `python -c "import CeLEry, torch, scanpy, anndata, numpy, scipy, pandas; print(CeLEry.__version__, torch.__version__, scanpy.__version__, anndata.__version__, numpy.__version__, scipy.__version__, pandas.__version__)"`.
+      render: text
+    validations:
+      required: true

@@ -130,7 +130,7 @@ Release 1.2.2 packages the repaired code for PyPI. A file-by-file comparison wit
 - `layers.py` is no longer included.
 - `__version__` is 1.2.2.
 
-The default learning rate is 1e-4 in both releases. The metadata of release 1.2.2 also names the correct copyright holder (`28bd465`) and requires pandas below 3, as `environment.yml` does (break 4). The wheel and the source distribution were built with build 1.6.1 and setuptools 84.2.1 from the tracked files with LF line endings, and `twine check` passed for both. setuptools warned that the form of the licence metadata is deprecated (see `FUTURE_WORK.md`). Installing the wheel with `pip` into a fresh environment, which is the route of a new user, was not verified. The upload to PyPI is left to the maintainer.
+The default learning rate is 1e-4 in both releases. The metadata of release 1.2.2 also names the correct copyright holder (`28bd465`) and requires pandas below 3, as `environment.yml` does (break 4). The wheel and the source distribution were built with build 1.6.1 and setuptools 84.2.1 from the tracked files with LF line endings, and `twine check` passed for both. setuptools warned that the form of the licence metadata is deprecated (see `FUTURE_WORK.md`). Installing the wheel with `pip` into a fresh environment, which is the route of a new user, was not verified. Both files were uploaded to PyPI on 2026-10-29. The files that PyPI serves have the same SHA-256 checksums as the local build.
 
 ## Reproducibility
 
@@ -154,7 +154,7 @@ The published Methods were compared with the code on `main`, and each code refer
 - Dropout of 0.25 stays active at prediction (`DNN.py` lines 210 and 406).
 - The confidence score is 1 minus the product of the two radii of the ellipse (`DNN.py` line 378).
 - The variational autoencoder resets the PyTorch seed on every call (`ClusterVAE.py` line 115).
-- `AugFit_domain` assigns labels correctly only when the input is sorted by domain (`data_augmentation.py` lines 145-155).
+- `AugFit_domain` assigns labels correctly only when the input is sorted by its grid coordinates, the order in which `DataAugmentation` writes the generated spots (`data_augmentation.py` lines 145-155, `TrainerExe.py` lines 73-91).
 - A `hidden_dims` list with four widths silently uses only the first three.
 
 **Disagree.**

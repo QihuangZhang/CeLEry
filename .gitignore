@@ -5,3 +5,5 @@ build/
 dist/
 .pytest_cache/
 examples/output/
+output/
+site/

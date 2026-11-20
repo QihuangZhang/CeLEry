@@ -99,7 +99,7 @@ All runs used a Windows 11 PC (15.8 GB RAM, 12 PyTorch threads) unless marked Li
 | `tutorial/tutorial.md`, all code blocks of tasks 1 to 3 with 3 epochs per model | All 24 steps succeed in 246 s. The only warnings are `OldFormatWarning` for the legacy data files, `ResourceWarning` for pickle files left open, and `ImplicitModificationWarning` where `Predict_layer`, `Predict_domain` and one tutorial line write to the `.obs` of an AnnData view |
 | Targeted checks | Sparse input to `Fit_cord` and `Predict_cord`, loading and running the pretrained Biogen model (`pretrainmodel/Biogen`), `make_annData_query`, `prefilter_cells`, `get_Layer_LIBD` and `plot_confusion_matrix` all succeed. `get_SSIM` and line 76 of `BiogenPretrain.md` still fail (breaks 5 and 6) |
 | `DataAugmentation` | Clustering finishes and the variational autoencoder trains (epoch 32 of 249 after 240 s, stopped by design). A complete run was not verified |
-| GitHub Actions | Not verified, because the workflow first runs after the branch is pushed |
+| GitHub Actions | Passed on `ubuntu-latest` with the pinned environment after the pushes to `main` on 2026-10-29 |
 | macOS | Not verified. The environment solves for osx-64 and osx-arm64 but was not built |
 
 ## Comparison with the 2024 baseline
@@ -130,7 +130,7 @@ Release 1.2.2 packages the repaired code for PyPI. A file-by-file comparison wit
 - `layers.py` is no longer included.
 - `__version__` is 1.2.2.
 
-The default learning rate is 1e-4 in both releases. The metadata of release 1.2.2 also names the correct copyright holder (`28bd465`) and requires pandas below 3, as `environment.yml` does (break 4). The wheel and the source distribution were built with build 1.6.1 and setuptools 84.2.1 from the tracked files with LF line endings, and `twine check` passed for both. setuptools warned that the form of the licence metadata is deprecated (see `FUTURE_WORK.md`). Installing the wheel with `pip` into a fresh environment, which is the route of a new user, was not verified. Both files were uploaded to PyPI on 2026-10-29. The files that PyPI serves have the same SHA-256 checksums as the local build.
+The default learning rate is 1e-4 in both releases. The metadata of release 1.2.2 also names the correct copyright holder (`28bd465`) and requires pandas below 3, as `environment.yml` does (break 4). The wheel and the source distribution were built with build 1.6.1 and setuptools 84.2.1 from the tracked files with LF line endings, and `twine check` passed for both. setuptools warned that the form of the licence metadata is deprecated (see `FUTURE_WORK.md`). Both files were uploaded to PyPI on 2026-10-29. The files that PyPI serves have the same SHA-256 checksums as the local build. The same day, `pip install CeLEryPy` installed release 1.2.2 into a fresh virtual environment with Python 3.12.15 on Windows 11 in 287 s. pip chose torch 2.15.0 and scanpy 1.12.5 instead of the pinned 2.14.1 and 1.12.4, and the pinned versions of the other packages in the table under Verification. In this environment, `examples/quickstart.py` ran in 25 s and gave a median error of 3.8 grid units, as in the pinned environment. The four smoke tests passed.
 
 ## Reproducibility
 
